@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-	public static final int node = 8;// OL.cnode100.txt
-	public static final int edge = 8;// OL.cedge100.txt
-	public static final String nodeFile = "./data/small/1.txt";
-	public static final String edgeFile = "./data/small/2.txt";
-	//public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
-	//public static final String edgeFile = "./data/Oldenburg/OL.cedge100.txt";
+	public static final int node = 100;// OL.cnode100.txt
+	public static final int edge = 107;// OL.cedge100.txt
+	//public static final String nodeFile = "./data/small/1.txt"; 8
+	//public static final String edgeFile = "./data/small/2.txt"; 8
+	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt"; 
+	public static final String edgeFile = "./data/Oldenburg/OL.cedge100.txt";
 	public static final String writeClusterFile = "./OL.cnode100 Cluster.txt";
 	public static int rangeNum = 8;// level range
 	public static int[] range;
@@ -46,7 +46,7 @@ public class Main {
 				}
 			}
 		}
-		/* set level to v array : 8 range 
+		/* set level to v array : 8 range */
 		int level = 1;
 		int index = 0;
 		for (int j = 0; j < vertexs.length; j++){
@@ -56,11 +56,12 @@ public class Main {
 				index++;
 			}
 		}
-		*/
+		/*small level
 		vertexs[0].level =1;
 		for (int j = 1; j < vertexs.length; j++){
 			vertexs[j].level =2;
 		}
+		*/
 		
 		/* write Cluster file */
 		try{
