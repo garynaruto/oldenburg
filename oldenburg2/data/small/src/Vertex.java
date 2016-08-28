@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /** One vertex of the graph, complete with mappings to neighbouring vertices */
 public class Vertex implements Comparable<Vertex> {
@@ -12,7 +13,7 @@ public class Vertex implements Comparable<Vertex> {
 	// use in dijkstra
 	public int dist = Integer.MAX_VALUE; // MAX_VALUE assumed to be infinity
 	public Vertex previous = null;// ¤W­Ó Vertex
-	public ArrayList<Vertex> neighbours = new ArrayList<Vertex>();
+	public Map<Vertex, Integer> neighbours = new HashMap<>();
 
 	public Vertex(int name) {
 		this.vertexID = name;
@@ -25,13 +26,6 @@ public class Vertex implements Comparable<Vertex> {
 
 	}
 
-	public Vertex(int nodeID, double nodeX, double nodeY, int count) {
-		this.vertexID = nodeID;
-		this.x = nodeX;
-		this.y = nodeY;
-		this.count = count;
-	}
-	
 	public String toString() {
 		String s = vertexID + " " + x + " " + y;
 		return s;

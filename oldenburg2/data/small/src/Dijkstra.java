@@ -10,6 +10,7 @@ class Graph {
 	/** Builds a graph from a set of edges */
 	public Graph(Edge[] edges) {
 		graph = new HashMap<>(edges.length);
+
 		// one pass to find all vertices
 		for (Edge e : edges) {
 			if (!graph.containsKey(e.v1))
@@ -19,11 +20,11 @@ class Graph {
 		}
 		// another pass to set neighbouring vertices
 		for (Edge e : edges) {
-			graph.get(e.v1).neighbours.add(graph.get(e.v2));
-		    graph.get(e.v2).neighbours.add(graph.get(e.v1)); // also do this for an undirected graph
+			graph.get(e.v1).neighbours.put(graph.get(e.v2), e.dist);
+		    graph.get(e.v2).neighbours.put(graph.get(e.v1), e.dist); // also do this for an undirected graph
 		}
 	}
-	/** Runs dijkstra using a specified source vertex 
+	/** Runs dijkstra using a specified source vertex */
 	public void dijkstra(int startName) {
 		if (!graph.containsKey(startName)) {
 			System.err.printf("Graph doesn't contain start vertex \"%s\"\n", startName );
@@ -41,8 +42,7 @@ class Graph {
 		dijkstra(q);
 		
 	}
-	*/
-	/** Implementation of dijkstra's algorithm using a binary heap. 
+	/** Implementation of dijkstra's algorithm using a binary heap. */
 	private void dijkstra(final NavigableSet<Vertex> q) {
 		Vertex u, v;
 		while (!q.isEmpty()) {
@@ -67,7 +67,7 @@ class Graph {
 			}
 		}
 	}
-	 */
+
 	/** Prints a path from the source to the specified vertex */
 	public void printPath(int endName) {
 		if (!graph.containsKey(endName)) {
@@ -86,7 +86,7 @@ class Graph {
 	public void printAllPaths() {
 		for (Vertex v : graph.values()) {
 			v.printPath();
-			//System.out.println();
+			System.out.println();
 		}
 	}
 	public String printCount(int vertexName){
