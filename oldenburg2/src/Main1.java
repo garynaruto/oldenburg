@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main1 {
 	public static final int node = 100;// OL.cnode100.txt
 	public static final int edge = 107;// OL.cedge100.txt
