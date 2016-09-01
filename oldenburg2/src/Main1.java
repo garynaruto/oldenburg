@@ -4,13 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class Main1 {
 	public static final int node = 100;// OL.cnode100.txt
 	public static final int edge = 107;// OL.cedge100.txt
-	//public static final String nodeFile = "./data/small/1.txt"; 8
-	//public static final String edgeFile = "./data/small/2.txt"; 8
-	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt"; 
+	// public static final String nodeFile = "./data/small/1.txt"; 8
+	// public static final String edgeFile = "./data/small/2.txt"; 8
+	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
 	public static final String edgeFile = "./data/Oldenburg/OL.cedge100.txt";
 	public static final String writeClusterFile = "./OL.cnode100 Cluster.txt";
 	public static int rangeNum = 8;// level range
@@ -27,7 +26,7 @@ public class Main1 {
 		for (int i = 1; i < range.length; i++) {
 			range[i] = range[i - 1] + range[0];
 		}
-		
+
 		Vertex tmp;
 		// set neighbours
 		for (Edge e : edges) {
@@ -50,81 +49,79 @@ public class Main1 {
 		/* set level to v array : 8 range */
 		int level = 1;
 		int index = 0;
-		for (int j = 0; j < vertexs.length; j++){
+		for (int j = 0; j < vertexs.length; j++) {
 			vertexs[j].level = level;
 			if (j > range[index] && (index + 1 < range.length)) {
 				level++;
 				index++;
 			}
 		}
-		/*small level
-		vertexs[0].level =1;
-		for (int j = 1; j < vertexs.length; j++){
-			vertexs[j].level =2;
-		}
-		*/
-		
+		/*
+		 * small level vertexs[0].level =1; for (int j = 1; j < vertexs.length;
+		 * j++){ vertexs[j].level =2; }
+		 */
+
 		Tree<Vertex> graphTree = new Tree<Vertex>();
 		graphTree.root.vertex = new Vertex(0, 0, 0);
 		// level 1 cluster
 		List<Vertex> vertexList = new ArrayList<Vertex>(Arrays.asList(vertexs));
 		List<Edge> edgeList = new ArrayList<Edge>(Arrays.asList(edges));
-		
+
 		// System.out.println("");
-		for (int i = 0; i < vertexList.size(); i++) {
-			Vertex v = vertexList.get(i);
-			if ( v.level == 1) {
+		// System.out.println("");
+		for (int i = 0; i < vertexs.length; i++) {
+			System.out.println("I: " + vertexs[i].vertexID);
+			if (vertexs[i].level == 1) {
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
-				treeNode.vertex = v;
+				treeNode.vertex = vertexs[i];
 				treeNode.parent = graphTree.root;
-				
 				// add level 1 vertex's neighboursNode & neighboursEdage
-				for(int j=0; j < v.neighbours.size(); j++){
-					Vertex a = v.neighbours.get(j);
+				for (int j = 0; j < vertexs[i].neighbours.size(); j++) {
+					Vertex a = vertexs[i].neighbours.get(j);
 					if (isContainsVertexByID(a.vertexID, vertexList)) {
 						if (a.level > 1) {
-							//System.out.println(a.vertexID+" level > 1");
+							// System.out.println(a.vertexID+" level > 1");
 							Tree.Node<Vertex> neighboursNode = new Tree.Node<Vertex>();
 							neighboursNode.vertex = findNodeByID(a.vertexID, vertexs);
 							neighboursNode.parent = treeNode;
 							treeNode.children.add(neighboursNode);
-							Edge e = findEdgeByVertex(v, a, edgeList);
+							Edge e = findEdgeByVertex(vertexs[i], a, edgeList);
 							treeNode.edges.add(e);
 							removeEdgeByID(e.edgeID, edgeList);
 							// add neighboursEdage
-							for(int t=0; t < a.neighbours.size(); t++){
+							for (int t = 0; t < a.neighbours.size(); t++) {
 								Vertex b = a.neighbours.get(t);
-								if (b.vertexID != v .vertexID && !isNeighbours(b.vertexID, v )){
+								if (b.vertexID != vertexs[i].vertexID && !isNeighbours(b.vertexID, vertexs[i])) {
 									Edge eDelete = null;
 									eDelete = findEdgeByVertex(a, b, edgeList);
 									if (eDelete != null) {
 										treeNode.edges.add(eDelete);
 										removeEdgeByID(eDelete.edgeID, edgeList);
-										edgeList.add(new Edge(true, 0, v, b, (e.dist + eDelete.dist)));
+										edgeList.add(new Edge(true, 0, vertexs[i], b, (e.dist + eDelete.dist)));
 										b.neighbours.remove(a);
-									}else{
+									} else {
 										System.out.println("eDelete == null");
 									}
 
-								} else if (b.vertexID != v.vertexID && isNeighbours(b.vertexID, v)){
+								} else if (b.vertexID != vertexs[i].vertexID && isNeighbours(b.vertexID, vertexs[i])) {
 									Edge eDelete = null;
 									eDelete = findEdgeByVertex(a, b, edgeList);
 									if (eDelete != null) {
 										treeNode.edges.add(eDelete);
 										removeEdgeByID(eDelete.edgeID, edgeList);
 										b.neighbours.remove(a);
-									}else{
-										System.out.println("eDelete2 == null");		
+									} else {
+										System.out.println("eDelete2 == null");
 									}
 
 								}
 							}
-							v.neighbours.remove(a);
-							j--;//when we remove neighbours the size() will -1
+							vertexs[i].neighbours.remove(a);
+							j--;// when we remove neighbours the size() will -1
 							removeVertexByID(a.vertexID, vertexList);
-							i--;
 						} else {
-							treeNode.edges.add(findEdgeByVertex(v, a, edgeList));
+							treeNode.edges.add(findEdgeByVertex(vertexs[i], a,
+									edgeList));
 						}
 					}
 				}
@@ -133,7 +130,7 @@ public class Main1 {
 		}
 		for (int i = 0; i < vertexList.size(); i++) {
 			Vertex v = vertexList.get(i);
-			if(v.level != 1){
+			if (v.level != 1) {
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 				treeNode.vertex = v;
 				treeNode.parent = graphTree.root;
@@ -141,19 +138,19 @@ public class Main1 {
 			}
 		}
 		System.out.println("22222");
-		/*------------------2----------------------------------------------*/
+		/*-----------------2----------------------------------------------*/
 		for (int i = 0; i < graphTree.root.children.size(); i++) {
-			//System.out.println("I >> "+graphTree.root.children.size());
+			// System.out.println("I >> "+graphTree.root.children.size());
 			Tree.Node<Vertex> v = graphTree.root.children.get(i);
-			if ( v.vertex.level == 1) {
-				//System.out.println("2");
+			System.out.println("level >> " + v.vertex.vertexID);
+			if (v.vertex.level == 1) {
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 				treeNode.vertex = v.vertex;
 				v.parent = treeNode;
 				treeNode.parent = graphTree.root;
 				treeNode.children.add(v);
 				// add level 1 vertex's neighboursNode & neighboursEdage
-				for(int j=0; j < v.vertex.neighbours.size(); j++){
+				for (int j = 0; j < v.vertex.neighbours.size(); j++) {
 					Vertex a = v.vertex.neighbours.get(j);
 					if (isContainsTreeNodeByID(a.vertexID, graphTree.root.children)) {
 						if (a.level > 1) {
@@ -161,14 +158,15 @@ public class Main1 {
 							neighboursNode.parent = treeNode;
 							treeNode.children.add(neighboursNode);
 							removeTreeNodeByID(a.vertexID, graphTree.root.children);
-							i--; 
+							i--;
 							Edge e = findEdgeByVertex(v.vertex, a, edgeList);
 							treeNode.edges.add(e);
 							removeEdgeByID(e.edgeID, edgeList);
 							// add neighboursEdage
-							for(int t=0; t < a.neighbours.size(); t++){
+							for (int t = 0; t < a.neighbours.size(); t++) {
 								Vertex b = a.neighbours.get(t);
-								if (b.vertexID != v.vertex.vertexID && !isNeighbours(b.vertexID, v.vertex )){
+								if (b.vertexID != v.vertex.vertexID
+										&& !isNeighbours(b.vertexID, v.vertex)) {
 									Edge eDelete = null;
 									eDelete = findEdgeByVertex(a, b, edgeList);
 									if (eDelete != null) {
@@ -176,28 +174,28 @@ public class Main1 {
 										removeEdgeByID(eDelete.edgeID, edgeList);
 										edgeList.add(new Edge(true, 0, v.vertex, b, (e.dist + eDelete.dist)));
 										b.neighbours.remove(a);
-									}else{
+									} else {
 										System.out.println("eDelete == null");
 									}
 
-								} else if (b.vertexID != v.vertex.vertexID && isNeighbours(b.vertexID, v.vertex)){
+								} else if (b.vertexID != v.vertex.vertexID && isNeighbours(b.vertexID, v.vertex)) {
 									Edge eDelete = null;
 									eDelete = findEdgeByVertex(a, b, edgeList);
 									if (eDelete != null) {
 										treeNode.edges.add(eDelete);
 										removeEdgeByID(eDelete.edgeID, edgeList);
 										b.neighbours.remove(a);
-									}else{
-										System.out.println("eDelete2 == null");		
+									} else {
+										System.out.println("eDelete2 == null");
 									}
 
 								}
 							}
 							v.vertex.neighbours.remove(a);
-							j--;//when we remove neighbours the size() will -1
+							j--;// when we remove neighbours the size() will -1
 							int indexi = graphTree.root.children.indexOf(a);
 							removeTreeNodeByID(a.vertexID, graphTree.root.children);
-							if(indexi < i){
+							if (indexi < i) {
 								i--;
 							}
 						} else {
@@ -205,13 +203,12 @@ public class Main1 {
 						}
 					}
 				}
-				graphTree.root.children.add(treeNode);
+				graphTree.root.children.add(0,treeNode);
 			}
-			
+
 			graphTree.root.children.remove(v);
 		}
-		
-		
+
 		System.out.println(">remain Edge=====================");
 		for (Edge e : edgeList) {
 			System.out.println(e);
@@ -223,7 +220,9 @@ public class Main1 {
 		System.out.println(">tree============================");
 		graphTree.root.printTree(0);
 	}
-	public static boolean isContainsTreeNodeByID(int vertexID, List<Tree.Node<Vertex>> l) {
+
+	public static boolean isContainsTreeNodeByID(int vertexID,
+			List<Tree.Node<Vertex>> l) {
 		for (Tree.Node<Vertex> v : l) {
 			if (v.vertex.vertexID == vertexID) {
 				return true;
@@ -231,6 +230,7 @@ public class Main1 {
 		}
 		return false;
 	}
+
 	public static boolean isContainsVertexByID(int vertexID, List<Vertex> l) {
 		for (Vertex v : l) {
 			if (v.vertexID == vertexID) {
@@ -253,7 +253,7 @@ public class Main1 {
 	}
 
 	public static boolean isNeighbours(int vertexID, Vertex center) {
-		
+
 		for (Vertex v : center.neighbours) {
 			if (v.vertexID == vertexID) {
 				return true;
@@ -261,7 +261,9 @@ public class Main1 {
 		}
 		return false;
 	}
-	public static boolean removeTreeNodeByID(int vertexID, List<Tree.Node<Vertex>> l) {
+
+	public static boolean removeTreeNodeByID(int vertexID,
+			List<Tree.Node<Vertex>> l) {
 		Tree.Node<Vertex> tmp;
 		for (int i = 0; i < l.size(); i++) {
 			tmp = l.get(i);
@@ -272,6 +274,7 @@ public class Main1 {
 		}
 		return false;
 	}
+
 	public static boolean removeVertexByID(int vertexID, List<Vertex> l) {
 		Vertex tmp;
 		for (int i = 0; i < l.size(); i++) {
@@ -283,7 +286,9 @@ public class Main1 {
 		}
 		return false;
 	}
-	public static Tree.Node<Vertex> findTreeNodeByID(int ID,  List<Tree.Node<Vertex>> l) {
+
+	public static Tree.Node<Vertex> findTreeNodeByID(int ID,
+			List<Tree.Node<Vertex>> l) {
 		for (int i = 0; i < l.size(); i++) {
 			Tree.Node<Vertex> v = l.get(i);
 			if (v.vertex.vertexID == ID) {
@@ -292,6 +297,7 @@ public class Main1 {
 		}
 		return null;
 	}
+
 	public static Vertex findNodeByID(int ID, Vertex[] nodes) {
 		for (int i = 0; i < nodes.length; i++) {
 			if (nodes[i].vertexID == ID) {
@@ -310,7 +316,8 @@ public class Main1 {
 		return null;
 	}
 
-	public static Edge findEdgeByVertex(Vertex v1, Vertex v2, List<Edge> edgeList) {
+	public static Edge findEdgeByVertex(Vertex v1, Vertex v2,
+			List<Edge> edgeList) {
 		for (int i = 0; i < edgeList.size(); i++) {
 			Edge out = edgeList.get(i);
 			if (out.v1 == v1.vertexID) {
