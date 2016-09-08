@@ -25,7 +25,7 @@ public class Tree<T> {
     	}
     	public void printTree(int count){
     		for(int i=0; i<count; i++){
-    			System.out.print(" ");
+    			System.out.print("  ");
     		}
     		System.out.print("."+vertex+"\n");
     		count++;
@@ -35,7 +35,7 @@ public class Tree<T> {
     		
     		for(Edge e : edges){
     			for(int i=0; i<count; i++){
-        			System.out.print(" ");
+        			System.out.print("  ");
         		}
         		System.out.print("> "+e+"\n");
     		}
