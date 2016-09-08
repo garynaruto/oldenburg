@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,26 @@ public class Tree<T> {
     		count--;
     		return ;
     	}
+    	public void writeTree(PrintWriter writer, int count){
+    		for(int i=0; i<count; i++){
+    			 writer.print("  ");
+    		}
+    		writer.println("."+vertex);
+    		count++;
+    		for(Node<T> t : children){
+    			t.writeTree(writer, count);
+    		}
+    		
+    		for(Edge e : edges){
+    			for(int i=0; i<count; i++){
+    				writer.print("  ");
+        		}
+    			writer.println("> "+e);
+    		}
+    		count--;
+    		return ;
+    	}
+    	
     	public boolean isChildren(){
         	return !this.children.isEmpty();
         }

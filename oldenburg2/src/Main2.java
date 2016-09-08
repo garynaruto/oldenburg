@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main2 {
-	public static final int node = 15;// OL.cnode100.txt
-	public static final int edge = 14;// OL.cedge100.txt
+	public static final int node = 100;// OL.cnode100.txt
+	public static final int edge = 107;// OL.cedge100.txt
 	//public static final String nodeFile = "./data/small/3.txt";
 	//public static final String edgeFile = "./data/small/4.txt";
-	public static final String nodeFile = "./data/Oldenburg/OL.cnode15.txt";
-	public static final String edgeFile = "./data/Oldenburg/OL.cedge15.txt";
+	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
+	public static final String edgeFile = "./data/Oldenburg/OL.cedge100.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
+	public static final String writeTreeFile =  "./data/OL."+node+"tree.txt";
 	public static int rangeNum = 8;// level range
 	public static int[] range;
 	public static void main(String[] args) {
@@ -70,8 +71,10 @@ public class Main2 {
 		List<Edge> edgeList = new ArrayList<Edge>(Arrays.asList(edges));
 		// System.out.println("");
 		for (int i = 0; i < vertexs.length; i++) {
+			System.out.println("i : "+i+" "+vertexs[i]);
 			List<Vertex> addNeighbours =new ArrayList<>();
 			if (vertexs[i].level == 1) {
+				System.out.println("level >> " + vertexs[i].vertexID+" n : "+vertexs[i].neighbours.size());
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 				treeNode.vertex = vertexs[i];
 				treeNode.parent = graphTree.root;
@@ -83,7 +86,9 @@ public class Main2 {
 				for (int j = 0; j < vertexs[i].neighbours.size(); j++) {
 					Vertex a = vertexs[i].neighbours.get(j);
 					if (isContainsVertexByID(a.vertexID, vertexList)) {
+						System.out.println("1 ");
 						if (a.level > 1) {
+							System.out.println("2 ");
 							Tree.Node<Vertex> neighboursNode = new Tree.Node<Vertex>();
 							neighboursNode.vertex = findNodeByID(a.vertexID, vertexs);
 							neighboursNode.parent = treeNode;
@@ -132,6 +137,7 @@ public class Main2 {
 				}
 				for(Vertex v1 :addNeighbours){
 					vertexs[i].neighbours.add(v1);
+					System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
 				}
 				graphTree.root.children.add(treeNode);
 			}
@@ -145,6 +151,19 @@ public class Main2 {
 				graphTree.root.children.add(treeNode);
 			}
 		}
+		
+		System.out.println(">remain Edge=====================");
+		for (Edge e : edgeList) {
+			System.out.println(e);
+		}
+		System.out.println(">Tree Vertex===================");
+		for (Tree.Node<Vertex> t: graphTree.root.children) {
+			System.out.println(t.vertex);
+		}
+		System.out.println(">tree============================");
+		graphTree.root.printTree(0);
+		
+		
 		System.out.println("22222");
 		int con = 1;
 		System.out.println("level one : "+levelone);
@@ -154,16 +173,14 @@ public class Main2 {
 			//System.out.println("c : "+con++);
 			System.out.println("graphTree.root.children.size() : "+graphTree.root.children.size());
 			if(graphTree.root.children.size() == 49){
-				if(con++ > 3){
+				if(con++ > 2){
 					System.exit(1);
 				}
 			}
 			for (int i = 0; i < graphTree.root.children.size(); i++) {
-				System.out.println("i : "+i);
-				
 				List<Vertex> removeNeighbours =new ArrayList<>();
 				Tree.Node<Vertex> v = graphTree.root.children.get(i);
-				System.out.println("i : "+v.vertex);
+				System.out.println("i : "+i+" "+v.vertex);
 				if (v.vertex.level == 1) {
 					//System.out.println(v.vertex.vertexID+" level == 1 ");
 					System.out.println("level >> " + v.vertex.vertexID+" n : "+v.vertex.neighbours.size());
@@ -246,7 +263,8 @@ public class Main2 {
 					graphTree.root.children.add(0,treeNode);
 					graphTree.root.children.remove(v);
 					for(Vertex v1 :removeNeighbours){
-						vertexs[i].neighbours.add(v1);
+						v.vertex.neighbours.add(v1);
+						//System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
 					}
 				}
 				
@@ -274,6 +292,9 @@ public class Main2 {
 		}
 		System.out.println(">tree============================");
 		graphTree.root.printTree(0);
+		
+		writeTreeFile(edgeList, graphTree);
+		
 	}
 
 	public static boolean isContainsTreeNodeByID(int vertexID,
@@ -492,6 +513,27 @@ public class Main2 {
 			for(Vertex v:vertexs){
 				writer.println(String.format("%d %d",v.vertexID, v.level ));
 			}
+			writer.flush();
+			writer.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		
+		}
+	}
+	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree){
+		try {
+			PrintWriter writer = new PrintWriter(writeTreeFile, "UTF-8");
+			writer.println(">remain Edge=====================");
+			for (Edge e : el) {
+				writer.println(e);
+			}
+			writer.println(">Tree Vertex===================");
+			for (Tree.Node<Vertex> t: graphTree.root.children) {
+				writer.println(t.vertex);
+			}
+			writer.println(">tree============================");
+			graphTree.root.writeTree(writer, 0);
 			writer.flush();
 			writer.close();
 			
