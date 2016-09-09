@@ -1,8 +1,10 @@
+package buildTree;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tree<T> {
+public class Tree<T> implements Serializable{
 	public Node<T> root;
 
     public Tree(T rootData){
@@ -14,7 +16,7 @@ public class Tree<T> {
         root.children = new ArrayList<Node<T>>();
     }
     
-    public static class Node<T>{
+    public static class Node<T>  implements Serializable{
     	public T vertex;
     	public Node<T> parent;
     	public List<Node<T>> children;

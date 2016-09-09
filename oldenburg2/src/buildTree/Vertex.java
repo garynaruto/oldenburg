@@ -1,7 +1,9 @@
+package buildTree;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /** One vertex of the graph, complete with mappings to neighbouring vertices */
-public class Vertex implements Comparable<Vertex> {
+public class Vertex implements Comparable<Vertex> , Serializable{
 
 	public int vertexID;
 	public double x;

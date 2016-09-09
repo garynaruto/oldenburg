@@ -1,5 +1,6 @@
+package buildTree;
 import java.util.*;
-
+/*
 public class Dijkstra {
 	
 }
@@ -7,7 +8,7 @@ class Graph {
 	public final Map<Integer, Vertex> graph; // mapping of vertex names to Vertex objects,
 												// built from a set of Edges
 	
-	/** Builds a graph from a set of edges */
+	/** Builds a graph from a set of edges 
 	public Graph(Edge[] edges) {
 		graph = new HashMap<>(edges.length);
 		// one pass to find all vertices
@@ -67,8 +68,8 @@ class Graph {
 			}
 		}
 	}
-	 */
-	/** Prints a path from the source to the specified vertex */
+	 
+	/** Prints a path from the source to the specified vertex 
 	public void printPath(int endName) {
 		if (!graph.containsKey(endName)) {
 			System.err.printf("Graph doesn't contain end vertex \"%s\"\n",
@@ -82,7 +83,7 @@ class Graph {
 	/**
 	 * Prints the path from the source to every vertex (output order is not
 	 * guaranteed)
-	 */
+	 *
 	public void printAllPaths() {
 		for (Vertex v : graph.values()) {
 			v.printPath();
@@ -97,4 +98,4 @@ class Graph {
 		
 	}
 	
-}
+}*/
