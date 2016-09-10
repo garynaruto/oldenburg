@@ -8,28 +8,33 @@ import java.util.Scanner;
 import test.Test2;
 
 public class Main2 {
-	public static final int node = 100;// OL.cnode100.txt
-	public static final int edge = 107;// OL.cedge100.txt
+	public static final int node = 1000;// OL.cnode100.txt
+	public static final int edge = 1152;// OL.cedge100.txt
 	public static final int dimasion = 2;
 	//public static final String nodeFile = "./data/small/3.txt";
 	//public static final String edgeFile = "./data/small/4.txt";
-	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
-	public static final String edgeFile = "./data/Oldenburg/OL.cedge100.txt";
+	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode1000.txt";
+	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge1000.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
 	public static final String writeTreeFile =  "./data/OL."+node+"tree.txt";
 	public static int rangeNum = 8;// level range
 	public static int[] range;
 	public static void main(String[] args) {
 		// read node and edge
-		Edge[] edges = readedge();
+		Edge[] edges = readSkyEdge();
 		Vertex[] vertexs = readSkyVertex();
 		System.out.println(edges.length + "\n" + vertexs.length);
+		
+		for(Edge e : edges){
+			if(e ==null)System.out.println("e==null");
+		}
 		range = new int[rangeNum];
 		range[0] = node / rangeNum;
 		for (int i = 1; i < range.length; i++) {
 			range[i] = range[i - 1] + range[0];
 		}
 		Vertex tmp;
+		
 		// set neighbours
 		for (Edge e : edges) {
 			tmp = findNodeByID(e.v1, vertexs);
@@ -312,9 +317,7 @@ public class Main2 {
         } catch (Exception e) {
         	e.printStackTrace();
         }
-        
 	}
-	
 	public static boolean isContainsTreeNodeByID(int vertexID,
 			List<Tree.Node<Vertex>> l) {
 		for (Tree.Node<Vertex> v : l) {
@@ -324,7 +327,6 @@ public class Main2 {
 		}
 		return false;
 	}
-
 	public static boolean isContainsVertexByID(int vertexID, List<Vertex> l) {
 		for (Vertex v : l) {
 			if (v.vertexID == vertexID) {
@@ -333,9 +335,7 @@ public class Main2 {
 		}
 		return false;
 	}
-	
 	public static boolean removeEdgeByVertex(Vertex v1, Vertex v2, List<Edge> edgeList) {
-		
 		Edge out;
 		for (int i = 0; i < edgeList.size(); i++) {
 			out = edgeList.get(i);
@@ -370,7 +370,6 @@ public class Main2 {
 			}
 		}
 		System.out.println("remove fall : "+v1.vertexID+" "+v2.vertexID);
-		
 		return false;
 	}
 	public static boolean isNeighbours(int vertexID, Vertex center) {
@@ -381,7 +380,6 @@ public class Main2 {
 		}
 		return false;
 	}
-
 	public static boolean removeTreeNodeByID(int vertexID,
 			List<Tree.Node<Vertex>> l) {
 		Tree.Node<Vertex> tmp;
@@ -394,7 +392,6 @@ public class Main2 {
 		}
 		return false;
 	}
-
 	public static boolean removeVertexByID(int vertexID, List<Vertex> l) {
 		Vertex tmp;
 		for (int i = 0; i < l.size(); i++) {
@@ -406,7 +403,6 @@ public class Main2 {
 		}
 		return false;
 	}
-
 	public static Tree.Node<Vertex> findTreeNodeByID(int ID,
 			List<Tree.Node<Vertex>> l) {
 		for (int i = 0; i < l.size(); i++) {
@@ -417,7 +413,6 @@ public class Main2 {
 		}
 		return null;
 	}
-
 	public static Vertex findNodeByID(int ID, Vertex[] nodes) {
 		for (int i = 0; i < nodes.length; i++) {
 			if (nodes[i].vertexID == ID) {
@@ -451,7 +446,6 @@ public class Main2 {
 		try {
 			File file = new File(edgeFile);
 			Scanner s = new Scanner(file);
-
 			for (int i = 0; i < edge; i++) {
 				edgeID = s.nextInt();
 				a = s.nextInt();
@@ -465,7 +459,7 @@ public class Main2 {
 		}
 		return out;
 	}
-	public static Edge[] readSkyedge() {
+	public static Edge[] readSkyEdge() {
 		System.out.println("readSkyedge");
 		Edge[] out = new Edge[edge];
 		int edgeID;
@@ -476,7 +470,6 @@ public class Main2 {
 		try {
 			File file = new File(edgeFile);
 			Scanner s = new Scanner(file);
-
 			for (int i = 0; i < edge; i++) {
 				edgeID = s.nextInt();
 				a = s.nextInt();
@@ -486,10 +479,11 @@ public class Main2 {
 					distance+=dimasion[j];
 				}
 				out[i] = new Edge(edgeID, a, b, distance, dimasion);
+				//if(out[i] == null)System.out.println("edge "+i);
 			}
 			s.close();
 		} catch (Exception e) {
-			e.toString();
+			e.printStackTrace();
 		}
 		return out;
 	}
@@ -503,7 +497,6 @@ public class Main2 {
 		try {
 			File file = new File(nodeFile);
 			Scanner s = new Scanner(file);
-
 			for (int i = 0; i < node; i++) {
 				nodeNum = s.nextInt();
 				nodeX = s.nextDouble();
@@ -519,12 +512,10 @@ public class Main2 {
 	}
 	
 	public Vertex[] readVertex() {
-		
 		Vertex[] out = new Vertex[node];
 		int nodeNum = 0;
 		double nodeX = 0.0;
 		double nodeY = 0.0;
-
 		try {
 			File file = new File(nodeFile);
 			Scanner s = new Scanner(file);
@@ -549,10 +540,8 @@ public class Main2 {
 			}
 			writer.flush();
 			writer.close();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
-		
 		}
 	}
 	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree){
@@ -570,10 +559,8 @@ public class Main2 {
 			graphTree.root.writeTree(writer, 0);
 			writer.flush();
 			writer.close();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
-		
 		}
 	}
 	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree, String file){
@@ -591,10 +578,8 @@ public class Main2 {
 			graphTree.root.writeTree(writer, 0);
 			writer.flush();
 			writer.close();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
-		
 		}
 	}
 }

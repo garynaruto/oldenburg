@@ -20,8 +20,8 @@ public class Dijkstra {
    public static void main(String[] args) {
       Graph g = new Graph(GRAPH);
       g.dijkstra(START);
-      g.printPath(END);
-      //g.printAllPaths();
+      //g.printPath(END);
+      g.printAllPaths();
    }
 }
 

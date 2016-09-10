@@ -6,7 +6,7 @@ public class Edge implements Serializable{
 	public int v1;
 	public int v2;
 	public double dist;
-	public double dimasion[] = new double[Main2.dimasion];
+	public double[] dimasion;
 	public boolean tmp=false;
 	
 	public Edge(int edgeID, int nodeID, int nodeID2,double distance) {
@@ -20,6 +20,7 @@ public class Edge implements Serializable{
 		this.v1 = nodeID;
 		this.v2 = nodeID2;
 		this.dist = distance;
+		dimasion = new double[Main2.dimasion];
 		for(int i=0; i<Main2.dimasion; i++){
 			dimasion[i] = dom[i];
 		}

@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Tree<T> implements Serializable{
 	public Node<T> root;
-
     public Tree(T rootData){
         root = new Node<T>();
         root.vertex = rootData;
@@ -15,8 +14,7 @@ public class Tree<T> implements Serializable{
         root = new Node<T>();
         root.children = new ArrayList<Node<T>>();
     }
-    
-    public static class Node<T>  implements Serializable{
+    public static class Node<T> implements Serializable{
     	public T vertex;
     	public Node<T> parent;
     	public List<Node<T>> children;
