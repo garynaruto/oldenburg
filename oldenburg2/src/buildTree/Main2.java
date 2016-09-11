@@ -139,7 +139,6 @@ public class Main2 {
 									}
 								}
 							}
-							
 							vertexs[i].neighbours.remove(a);
 							j--;// when we remove neighbours the size() will -1
 							removeVertexByID(a.vertexID, vertexList);
@@ -156,8 +155,23 @@ public class Main2 {
 				//skyline path
 				SkyPath skyPath = new SkyPath();
 				skyPath.inputData(treeNode.edges,treeNode.children);
-				String[] start ={"2983"};
-				String[] end ={"2983"};
+				int[] allNode = new int[treeNode.children.size()];
+				for(int l=0; l<allNode.length; l++){
+					allNode[l] = treeNode.children.get(l).vertex.vertexID;
+				}
+				
+				for(int j=0; j<allNode.length; j++){
+					for(int k=j+1; k < allNode.length; k++){
+						
+						
+						
+						//skyPath.multipointSkyline(start, end);
+					}
+				}
+				
+				
+				
+				
 				graphTree.root.children.add(treeNode);
 			}
 		}
@@ -265,6 +279,11 @@ public class Main2 {
 						}
 					}
 					//skyline path
+					
+					
+					
+					
+					
 					graphTree.root.children.add(0,treeNode);
 					graphTree.root.children.remove(v);
 					for(Vertex v1 :removeNeighbours){

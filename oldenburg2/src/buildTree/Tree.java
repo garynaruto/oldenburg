@@ -19,10 +19,12 @@ public class Tree<T> implements Serializable{
     	public Node<T> parent;
     	public List<Node<T>> children;
     	public List<Edge> edges;
+    	public List<Node<T>[]> skyLinePath;
     	
     	public Node(){
     		children = new ArrayList<Node<T>>();
     		edges = new ArrayList<Edge>();
+    		skyLinePath = new ArrayList<Node<T>[]>();
     	}
     	public void printTree(int count){
     		for(int i=0; i<count; i++){

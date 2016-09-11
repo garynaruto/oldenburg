@@ -21,12 +21,12 @@ public class SkyPath {
 	public ArrayList<Object[]> pathSet = new ArrayList<Object[]>();
 	public ArrayList<Object[]> multipointSkypathSet = new ArrayList<Object[]>();
 	public double[][] min;
-	public PriorityQueue<String> queue = new PriorityQueue<String>();
+	public PriorityQueue<Integer> queue = new PriorityQueue<Integer>();
 	public int[] predecessor;
 	
 	public static void main(String[] args) {
-		String[] start ={"2983"};
-		String[] end ={"3030"};
+		int[] start ={2983};
+		int[] end ={3030};
 		SkyPath skyPath = new SkyPath();
 		skyPath.inputData();
 		skyPath.multipointSkyline(start, end);
@@ -43,20 +43,20 @@ public class SkyPath {
 	public void inputData(List<Edge> elist, List<Tree.Node<Vertex>> vlist) {
 		try {
 			for(Tree.Node<Vertex> v : vlist){
-				nodes.add(new SkyNode(String.format("%d",v.vertex.vertexID), v.vertex.x, v.vertex.y));
+				nodes.add(new SkyNode(v.vertex.vertexID, v.vertex.x, v.vertex.y));
 			}
 			for(Edge e : elist){
-				SkyEdge temp = new SkyEdge(String.format("%d",e.v1),String.format("%d",e.v2));
+				SkyEdge temp = new SkyEdge(e.v1, e.v2);
 				for (int i = 0; i <Main2.dimasion; i++) {
 					temp.addCost(e.dimasion[i]);
 				}
 				edges.add(temp);
 				for (int i = 0; i < nodes.size(); i++) {
-					if (nodes.get(i).getNodeId().equals(String.format("%d",e.v1))) {
-						nodes.get(i).addRelationNodeId(String.format("%d",e.v2));
+					if (nodes.get(i).getNodeId()==e.v1) {
+						nodes.get(i).addRelationNodeId(e.v2);
 					}
-					if (nodes.get(i).getNodeId().equals(String.format("%d",e.v2))) {
-						nodes.get(i).addRelationNodeId(String.format("%d",e.v1));
+					if (nodes.get(i).getNodeId()==e.v2) {
+						nodes.get(i).addRelationNodeId(e.v1);
 					}
 				}
 			}
@@ -76,21 +76,21 @@ public class SkyPath {
 			String edge = null;
 			while ((node = nodeBufferReader.readLine()) != null) {
 				String[] fields = node.split(" ");
-				nodes.add(new SkyNode(fields[0], Double.parseDouble(fields[1]), Double.parseDouble(fields[2])));
+				nodes.add(new SkyNode(Integer.parseInt(fields[0]), Double.parseDouble(fields[1]), Double.parseDouble(fields[2])));
 			}
 			while ((edge = edgeBufferReader.readLine()) != null) {
 				String[] fields = edge.split(" ");
-				SkyEdge temp = new SkyEdge(fields[1], fields[2]);
+				SkyEdge temp = new SkyEdge(Integer.parseInt(fields[1]),Integer.parseInt(fields[2]));
 				for (int i = 3; i < fields.length; i++) {
 					temp.addCost(Double.parseDouble(fields[i]));
 				}
 				edges.add(temp);
 				for (int i = 0; i < nodes.size(); i++) {
-					if (nodes.get(i).getNodeId().equals(fields[1])) {
-						nodes.get(i).addRelationNodeId(fields[2]);
+					if (nodes.get(i).getNodeId()==Integer.parseInt(fields[1])) {
+						nodes.get(i).addRelationNodeId(Integer.parseInt(fields[2]));
 					}
-					if (nodes.get(i).getNodeId().equals(fields[2])) {
-						nodes.get(i).addRelationNodeId(fields[1]);
+					if (nodes.get(i).getNodeId()==Integer.parseInt(fields[2])) {
+						nodes.get(i).addRelationNodeId(Integer.parseInt(fields[1]));
 					}
 				}
 			}
@@ -111,7 +111,7 @@ public class SkyPath {
 		stack = new Stack<SkyNode>();
 		pathSet = new ArrayList<Object[]>();
 		multipointSkypathSet = new ArrayList<Object[]>();
-		queue = new PriorityQueue<String>();
+		queue = new PriorityQueue<Integer>();
 	}
 
 	public boolean isNodeInStack(SkyNode node) {
@@ -165,11 +165,11 @@ public class SkyPath {
 					}
 				}
 			}
-			if (min[Integer.parseInt(cNode.getNodeId())][0] == 0) {
+			if (min[cNode.getNodeId()][0] == 0) {
 				Object[] o1 = stack.toArray();
 				for (int j = 0; j < o1.length - 1; j++) {
 					for (int k = 0; k < edges.get(0).getCost().size(); k++) {
-						min[Integer.parseInt(cNode.getNodeId())][k] = min[Integer.parseInt(cNode.getNodeId())][k]
+						min[cNode.getNodeId()][k] = min[cNode.getNodeId()][k]
 								+ searchEdge(((SkyNode) (o1[j])).getNodeId(), ((SkyNode) (o1[j + 1])).getNodeId()).getCost()
 										.get(k);
 					}
@@ -186,10 +186,10 @@ public class SkyPath {
 					}
 				}
 				for (int j = 0; j < edges.get(0).getCost().size(); j++) {
-					if (min[Integer.parseInt(cNode.getNodeId())][j] > cost[j]) {
+					if (min[cNode.getNodeId()][j] > cost[j]) {
 						o1DominateO2 = false;
 					}
-					if (cost[j] > min[Integer.parseInt(cNode.getNodeId())][j]) {
+					if (cost[j] > min[cNode.getNodeId()][j]) {
 						o2DominateO1 = false;
 					}
 				}
@@ -197,7 +197,7 @@ public class SkyPath {
 					return true;
 				} else if (o1DominateO2 == false && o2DominateO1 == true) {
 					for (int j = 0; j < edges.get(0).getCost().size(); j++) {
-						min[Integer.parseInt(cNode.getNodeId())][j] = cost[j];
+						min[cNode.getNodeId()][j] = cost[j];
 					}
 				}
 			}
@@ -237,20 +237,20 @@ public class SkyPath {
 	}
 
 
-	public SkyNode searchNode(String nodeId) {
+	public SkyNode searchNode(int nodeId) {
 		for (int i = 0; i < nodes.size(); i++) {
-			if (nodes.get(i).getNodeId().equals(nodeId)) {
+			if (nodes.get(i).getNodeId()==nodeId) {
 				return nodes.get(i);
 			}
 		}
 		return null;
 	}
 
-	public SkyEdge searchEdge(String startNodeId, String endNodeId) {
+	public SkyEdge searchEdge(int startNodeId, int endNodeId) {
 		for (int i = 0; i < edges.size(); i++) {
-			if (edges.get(i).getStartNodeId().equals(startNodeId) && edges.get(i).getEndNodeId().equals(endNodeId)
-					|| edges.get(i).getStartNodeId().equals(endNodeId)
-							&& edges.get(i).getEndNodeId().equals(startNodeId)) {
+			if (edges.get(i).getStartNodeId()==startNodeId && edges.get(i).getEndNodeId()==endNodeId
+					|| edges.get(i).getStartNodeId()==endNodeId
+							&& edges.get(i).getEndNodeId()==startNodeId) {
 				return edges.get(i);
 			}
 		}
@@ -291,7 +291,8 @@ public class SkyPath {
 		}
 	}
 
-	public void multipointSkyline(String[] startPoint, String[] endPoint) {
+	public void multipointSkyline(int[] startPoint, int[] endPoint) {
+		multipointSkypathSet = new ArrayList<Object[]>();
 		for (int i = 0; i < startPoint.length; i++) {
 			for (int j = 0; j < endPoint.length; j++) {
 				preprocess(searchNode(startPoint[i]), searchNode(endPoint[j]));
@@ -302,7 +303,7 @@ public class SkyPath {
 				stack = new Stack<SkyNode>();
 				pathSet = new ArrayList<Object[]>();
 				min = new double[6200][edges.get(0).getCost().size()];
-				queue = new PriorityQueue<String>();
+				queue = new PriorityQueue<Integer>();
 				predecessor = new int[6200];
 			}
 		}
@@ -327,16 +328,16 @@ public class SkyPath {
 		for (int i = 0; i < predecessor.length; i++) {
 			predecessor[i] = -2;
 		}
-		predecessor[Integer.parseInt(startNode.getNodeId())] = -1;
+		predecessor[startNode.getNodeId()] = -1;
 		queue.add(startNode.getNodeId());
 		while (true) {
-			String temp;
-			ArrayList<String> relationNodesId = new ArrayList<String>();
+			int temp;
+			ArrayList<Integer> relationNodesId = new ArrayList<Integer>();
 			temp = queue.poll();
-			if (temp.equals(endNode.getNodeId())) {
-				int i = Integer.parseInt(endNode.getNodeId());
+			if (temp==endNode.getNodeId()) {
+				int i = endNode.getNodeId();
 				while (i != -1) {
-					tempList.add(searchNode(String.valueOf(i)));
+					tempList.add(searchNode(i));
 					i = predecessor[i];
 				}
 				for (int j = tempList.size() - 1; j >= 0; j--) {
@@ -347,11 +348,11 @@ public class SkyPath {
 			}
 			relationNodesId = searchNode(temp).getRelationNodesId();
 			for (int i = 0; i < relationNodesId.size(); i++) {
-				if (predecessor[Integer.parseInt(relationNodesId.get(i))] != -2) {
+				if (predecessor[relationNodesId.get(i)] != -2) {
 					continue;
 				}
 				queue.add(relationNodesId.get(i));
-				predecessor[Integer.parseInt(relationNodesId.get(i))] = Integer.parseInt(temp);
+				predecessor[relationNodesId.get(i)] = temp;
 			}
 		}
 	}

@@ -3,12 +3,12 @@ package SkyPath;
 import java.util.ArrayList;
 
 public class SkyNode {
-	public ArrayList<String> relationNodesId = new ArrayList<String>();
-	public String nodeId = null;
+	public ArrayList<Integer> relationNodesId = new ArrayList<Integer>();
+	public int nodeId;
 	public double x, y;
 	public int count = 0;
 	
-	public SkyNode(String nodeId, double x, double y) {
+	public SkyNode(int nodeId, double x, double y) {
 		this.nodeId = nodeId;
 		this.x = x;
 		this.y = y;
@@ -16,7 +16,7 @@ public class SkyNode {
 	public String toString(){
 		return nodeId+" ";
 	}
-	public String getNodeId() {
+	public int getNodeId() {
 		return nodeId;
 	}
 	public int getCount() {
@@ -27,20 +27,20 @@ public class SkyNode {
 		this.count = count;
 	}
 
-	public ArrayList<String> getRelationNodesId() {
+	public ArrayList<Integer> getRelationNodesId() {
 		return relationNodesId;
 	}
 
-	public void setRelationNodesId(ArrayList<String> relationNodesId) {
+	public void setRelationNodesId(ArrayList<Integer> relationNodesId) {
 		this.relationNodesId = relationNodesId;
 	}
 
-	public void addRelationNodeId(String nodeId) {
+	public void addRelationNodeId(Integer nodeId) {
 		relationNodesId.add(nodeId);
 	}
 
 	public boolean equals(SkyNode node) {
-		if (this.getNodeId().equals(node.getNodeId())) {
+		if (this.nodeId == node.nodeId) {
 			return true;
 		} else {
 			return false;

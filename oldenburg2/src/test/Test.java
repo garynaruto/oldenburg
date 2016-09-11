@@ -42,18 +42,24 @@ public class Test {
 		//System.out.println(">tree============================");
 		//graphTree.root.printTree(0);
 		
-		String[] start ={"2983"};
-		String[] end ={"2983"};
+		int[] start ={2938};
+		int[] end ={3152};
 		SkyPath skyPath = new SkyPath();
 		skyPath.inputData(edgeList, graphTree.root.children);
+		
 		skyPath.multipointSkyline(start, end);
+		SkyNode[][] ansNodes = skyPath.multipointSkypathSet.toArray(new SkyNode[skyPath.multipointSkypathSet.size()][]);
+		/*
 		for(int i=0; i<skyPath.multipointSkypathSet.size(); i++){
-			Object[] ans =skyPath.multipointSkypathSet.get(i);
+			//Object[] ans =skyPath.multipointSkypathSet.get(i);
+			
+			SkyNode[][] ansNodes = ans.toArray(new SkyNode[ans.length]);
 			System.out.println("Path "+(i+1)+" ------>");
 			for(Object a : ans){
 				System.out.println((SkyNode)a);
 			}
 		}
+		*/
 		
 		
 		
