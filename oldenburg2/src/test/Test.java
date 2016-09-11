@@ -9,6 +9,9 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import SkyPath.SkyNode;
+import SkyPath.SkyPath;
 import buildTree.*;
 
 public class Test {
@@ -36,8 +39,23 @@ public class Test {
 		for (Tree.Node<Vertex> t : graphTree.root.children) {
 			System.out.println(t.vertex);
 		}
-		System.out.println(">tree============================");
-		graphTree.root.printTree(0);
-
+		//System.out.println(">tree============================");
+		//graphTree.root.printTree(0);
+		
+		String[] start ={"2983"};
+		String[] end ={"2983"};
+		SkyPath skyPath = new SkyPath();
+		skyPath.inputData(edgeList, graphTree.root.children);
+		skyPath.multipointSkyline(start, end);
+		for(int i=0; i<skyPath.multipointSkypathSet.size(); i++){
+			Object[] ans =skyPath.multipointSkypathSet.get(i);
+			System.out.println("Path "+(i+1)+" ------>");
+			for(Object a : ans){
+				System.out.println((SkyNode)a);
+			}
+		}
+		
+		
+		
 	}
 }

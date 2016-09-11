@@ -5,19 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import SkyPath.SkyPath;
 import test.Test2;
 
 public class Main2 {
-	public static final int node = 1000;// OL.cnode100.txt
-	public static final int edge = 1152;// OL.cedge100.txt
+	public static final int node = 100;// OL.cnode100.txt
+	public static final int edge = 107;// OL.cedge100.txt
 	public static final int dimasion = 2;
 	//public static final String nodeFile = "./data/small/3.txt";
 	//public static final String edgeFile = "./data/small/4.txt";
-	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode1000.txt";
-	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge1000.txt";
+	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
+	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge100.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
 	public static final String writeTreeFile =  "./data/OL."+node+"tree.txt";
-	public static int rangeNum = 8;// level range
+	public static int rangeNum = 10;// level range
 	public static int[] range;
 	public static void main(String[] args) {
 		// read node and edge
@@ -80,10 +81,10 @@ public class Main2 {
 		List<Edge> edgeList = new ArrayList<Edge>(Arrays.asList(edges));
 		// System.out.println("");
 		for (int i = 0; i < vertexs.length; i++) {
-			System.out.println("i : "+i+" "+vertexs[i]);
+			//System.out.println("i : "+i+" "+vertexs[i]);
 			List<Vertex> addNeighbours =new ArrayList<>();
 			if (vertexs[i].level == 1) {
-				System.out.println("level >> " + vertexs[i].vertexID+" n : "+vertexs[i].neighbours.size());
+				//System.out.println("level >> " + vertexs[i].vertexID+" n : "+vertexs[i].neighbours.size());
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 				treeNode.vertex = vertexs[i];
 				treeNode.parent = graphTree.root;
@@ -95,9 +96,9 @@ public class Main2 {
 				for (int j = 0; j < vertexs[i].neighbours.size(); j++) {
 					Vertex a = vertexs[i].neighbours.get(j);
 					if (isContainsVertexByID(a.vertexID, vertexList)) {
-						System.out.println("1 ");
+						//System.out.println("1 ");
 						if (a.level > 1) {
-							System.out.println("2 ");
+							//System.out.println("2 ");
 							Tree.Node<Vertex> neighboursNode = new Tree.Node<Vertex>();
 							neighboursNode.vertex = findNodeByID(a.vertexID, vertexs);
 							neighboursNode.parent = treeNode;
@@ -115,7 +116,11 @@ public class Main2 {
 									if (eDelete != null) {
 										treeNode.edges.add(eDelete);
 										removeEdgeByVertex(a, b, edgeList);
-										edgeList.add(new Edge(true, 0, vertexs[i], b, (e.dist + eDelete.dist)));
+										Edge newEdge = new Edge(true, 0, vertexs[i], b, (e.dist + eDelete.dist));
+										for(int d=0; d<Main2.dimasion; d++){
+											newEdge.dimasion[d] = e.dimasion[d] + eDelete.dimasion[d];
+										}
+										edgeList.add(newEdge);
 										b.neighbours.remove(a);
 										b.neighbours.add(vertexs[i]);
 										addNeighbours.add(b);
@@ -146,9 +151,13 @@ public class Main2 {
 				}
 				for(Vertex v1 :addNeighbours){
 					vertexs[i].neighbours.add(v1);
-					System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
+					//System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
 				}
 				//skyline path
+				SkyPath skyPath = new SkyPath();
+				skyPath.inputData(treeNode.edges,treeNode.children);
+				String[] start ={"2983"};
+				String[] end ={"2983"};
 				graphTree.root.children.add(treeNode);
 			}
 		}
@@ -162,18 +171,6 @@ public class Main2 {
 			}
 		}
 		
-		System.out.println(">remain Edge=====================");
-		for (Edge e : edgeList) {
-			System.out.println(e);
-		}
-		System.out.println(">Tree Vertex===================");
-		for (Tree.Node<Vertex> t: graphTree.root.children) {
-			System.out.println(t.vertex);
-		}
-		System.out.println(">tree============================");
-		graphTree.root.printTree(0);
-		
-		
 		System.out.println("22222");
 		int con = 1;
 		System.out.println("level one : "+levelone);
@@ -181,20 +178,14 @@ public class Main2 {
 		/*-----------------2----------------------------------------------*/
 		while(graphTree.root.children.size() > levelone){
 			//System.out.println("c : "+con++);
-			System.out.println("graphTree.root.children.size() : "+graphTree.root.children.size());
-			if(graphTree.root.children.size() == 49){
-				if(con++ > 2){
-					System.exit(1);
-				}
-			}
+			//System.out.println("graphTree.root.children.size() : "+graphTree.root.children.size());
 			for (int i = 0; i < graphTree.root.children.size(); i++) {
 				List<Vertex> removeNeighbours =new ArrayList<>();
 				Tree.Node<Vertex> v = graphTree.root.children.get(i);
-				System.out.println("i : "+i+" "+v.vertex);
+				//System.out.println("i : "+i+" "+v.vertex);
 				if (v.vertex.level == 1) {
 					//System.out.println(v.vertex.vertexID+" level == 1 ");
-					System.out.println("level >> " + v.vertex.vertexID+" n : "+v.vertex.neighbours.size());
-					
+					//System.out.println("level >> " + v.vertex.vertexID+" n : "+v.vertex.neighbours.size());
 					Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 					treeNode.vertex = v.vertex;
 					v.parent = treeNode;
@@ -203,11 +194,11 @@ public class Main2 {
 					// add level 1 vertex's neighboursNode & neighboursEdage
 					for (int j = 0; j < v.vertex.neighbours.size(); j++) {
 						Vertex a = v.vertex.neighbours.get(j);
-						System.out.println("a neighbours : "+a.vertexID);
+						//System.out.println("a neighbours : "+a.vertexID);
 						if (isContainsTreeNodeByID(a.vertexID, graphTree.root.children)) {
-							System.out.println("1 ");
+							//System.out.println("1 ");
 							if (a.level > 1) {
-								System.out.println("2 ");
+								//System.out.println("2 ");
 								Tree.Node<Vertex> neighboursNode = findTreeNodeByID(a.vertexID, graphTree.root.children);
 								neighboursNode.parent = treeNode;
 								treeNode.children.add(neighboursNode);
@@ -220,20 +211,24 @@ public class Main2 {
 									continue;
 								}
 								// add neighboursEdage
-								System.out.println("a n : "+a.neighbours.size());
+								//System.out.println("a n : "+a.neighbours.size());
 								for (int t = 0; t < a.neighbours.size(); t++) {
 									Vertex b = a.neighbours.get(t);
-									System.out.println("b neighbours : "+b.vertexID);
+									//System.out.println("b neighbours : "+b.vertexID);
 									if (b.vertexID != v.vertex.vertexID && !isNeighbours(b.vertexID, v.vertex)) {
-										System.out.println("b 1");
+										//System.out.println("b 1");
 										Edge eDelete = null;
 										eDelete = findEdgeByVertex(a, b, edgeList);
 										if (eDelete != null) {
-											System.out.println("b 2");
+											//System.out.println("b 2");
 											//System.out.println("eDelete : "+eDelete.edgeID);
 											treeNode.edges.add(eDelete);
 											removeEdgeByVertex(a, b, edgeList);
-											edgeList.add(new Edge(true, 0, v.vertex, b, (e.dist + eDelete.dist)));
+											Edge newEdge = new Edge(true, 0, v.vertex, b, (e.dist + eDelete.dist));
+											for(int d=0; d<Main2.dimasion; d++){
+												newEdge.dimasion[d] = e.dimasion[d] + eDelete.dimasion[d];
+											}
+											edgeList.add(newEdge);
 											b.neighbours.remove(a);
 											b.neighbours.add(v.vertex);
 											removeNeighbours.add(b);
@@ -243,9 +238,9 @@ public class Main2 {
 									} else if (b.vertexID != v.vertex.vertexID && isNeighbours(b.vertexID,v.vertex)){
 										Edge eDelete = null;
 										eDelete = findEdgeByVertex(a, b, edgeList);
-										System.out.println("b 1.");
+										//System.out.println("b 1.");
 										if (eDelete != null) {
-											System.out.println("b 2.");
+											//System.out.println("b 2.");
 											treeNode.edges.add(eDelete);
 											removeEdgeByVertex(a, b, edgeList);
 											b.neighbours.remove(a);
@@ -278,16 +273,6 @@ public class Main2 {
 					}
 				}	
 			}
-			System.out.println(">remain Edge=====================");
-			for (Edge e : edgeList) {
-				System.out.println(e);
-			}
-			System.out.println(">Tree Vertex===================");
-			for (Tree.Node<Vertex> t: graphTree.root.children) {
-				System.out.println(t.vertex);
-			}
-			System.out.println(">tree============================");
-			graphTree.root.printTree(0);
 		}
 		
 		System.out.println(">remain Edge=====================");

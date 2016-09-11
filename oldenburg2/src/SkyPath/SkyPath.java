@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import buildTree.*;
@@ -39,7 +40,7 @@ public class SkyPath {
 			}
 		}
 	}
-	public void inputData(Edge[] elist, Tree.Node<Vertex>[] vlist) {
+	public void inputData(List<Edge> elist, List<Tree.Node<Vertex>> vlist) {
 		try {
 			for(Tree.Node<Vertex> v : vlist){
 				nodes.add(new SkyNode(String.format("%d",v.vertex.vertexID), v.vertex.x, v.vertex.y));

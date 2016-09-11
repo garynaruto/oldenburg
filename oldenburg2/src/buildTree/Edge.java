@@ -14,6 +14,7 @@ public class Edge implements Serializable{
 		this.v1 = nodeID;
 		this.v2 = nodeID2;
 		this.dist = distance;
+		dimasion = new double[Main2.dimasion];
 	}
 	public Edge(int edgeID, int nodeID, int nodeID2,double distance, double[] dom) {
 		this.edgeID = edgeID;
@@ -30,12 +31,14 @@ public class Edge implements Serializable{
 		this.v1 = v1.vertexID;
 		this.v2 = v2.vertexID;
 		this.dist = distance;
+		dimasion = new double[Main2.dimasion];
 		tmp = true;
 	}
 	public Edge(int v1, int v2, int dist) {
 		this.v1 = v1;
 		this.v2 = v2;
 		this.dist = dist;
+		dimasion = new double[Main2.dimasion];
 	}
 
 	public String toString() {
