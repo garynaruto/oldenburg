@@ -28,6 +28,7 @@ public class Main2 {
 		for(Edge e : edges){
 			if(e ==null)System.out.println("e==null");
 		}
+		/*calculate range */
 		range = new int[rangeNum];
 		range[0] = node / rangeNum;
 		for (int i = 1; i < range.length; i++) {
@@ -147,6 +148,7 @@ public class Main2 {
 					vertexs[i].neighbours.add(v1);
 					System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
 				}
+				//skyline path
 				graphTree.root.children.add(treeNode);
 			}
 		}
@@ -238,7 +240,6 @@ public class Main2 {
 										} else {
 											System.out.println("eDelete == null");
 										}
-										
 									} else if (b.vertexID != v.vertex.vertexID && isNeighbours(b.vertexID,v.vertex)){
 										Edge eDelete = null;
 										eDelete = findEdgeByVertex(a, b, edgeList);
@@ -268,6 +269,7 @@ public class Main2 {
 							}
 						}
 					}
+					//skyline path
 					graphTree.root.children.add(0,treeNode);
 					graphTree.root.children.remove(v);
 					for(Vertex v1 :removeNeighbours){
@@ -439,9 +441,7 @@ public class Main2 {
 	public static Edge[] readedge() {
 		System.out.println("readedge");
 		Edge[] out = new Edge[edge];
-		int edgeID;
-		int a;
-		int b;
+		int edgeID , a, b;
 		double distance;
 		try {
 			File file = new File(edgeFile);
@@ -455,7 +455,7 @@ public class Main2 {
 			}
 			s.close();
 		} catch (Exception e) {
-			e.toString();
+			e.printStackTrace();
 		}
 		return out;
 	}
@@ -506,7 +506,7 @@ public class Main2 {
 			}
 			s.close();
 		} catch (Exception e) {
-			e.toString();
+			e.printStackTrace();
 		}
 		return out;
 	}
@@ -528,7 +528,7 @@ public class Main2 {
 			}
 			s.close();
 		} catch (Exception e) {
-			e.toString();
+			e.printStackTrace();
 		}
 		return out;
 	}
