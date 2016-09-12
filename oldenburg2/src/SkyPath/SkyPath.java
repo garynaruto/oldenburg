@@ -11,15 +11,13 @@ import java.util.Stack;
 import buildTree.*;
 
 public class SkyPath {
-	//public static final String nodeFile = "./data/small/sky1.txt";
-	//public static final String edgeFile = "./data/small/sky2.txt";
 	public static final String nodeFile = Main2.nodeFile;
 	public static final String edgeFile = Main2.edgeFile;
 	public ArrayList<SkyNode> nodes = new ArrayList<SkyNode>();
 	public ArrayList<SkyEdge> edges = new ArrayList<SkyEdge>();
 	public Stack<SkyNode> stack = new Stack<SkyNode>();
-	public ArrayList<Object[]> pathSet = new ArrayList<Object[]>();
-	public ArrayList<Object[]> multipointSkypathSet = new ArrayList<Object[]>();
+	public ArrayList<SkyNode[]> pathSet = new ArrayList<SkyNode[]>();
+	public ArrayList<SkyNode[]> multipointSkypathSet = new ArrayList<SkyNode[]>();
 	public double[][] min;
 	public PriorityQueue<Integer> queue = new PriorityQueue<Integer>();
 	public int[] predecessor;
@@ -28,7 +26,7 @@ public class SkyPath {
 		int[] start ={2983};
 		int[] end ={3030};
 		SkyPath skyPath = new SkyPath();
-		skyPath.inputData();
+		skyPath.inputData(nodeFile,edgeFile);
 		skyPath.multipointSkyline(start, end);
 		//Object[] ans =skyPath.multipointSkypathSet.get(0);//裡面就是答案，每個Object[]就是一條路
 		int count = skyPath.multipointSkypathSet.size();
@@ -53,10 +51,33 @@ public class SkyPath {
 				edges.add(temp);
 				for (int i = 0; i < nodes.size(); i++) {
 					if (nodes.get(i).getNodeId()==e.v1) {
-						nodes.get(i).addRelationNodeId(e.v2);
+						//
+						boolean findFlg = false;
+						for(Tree.Node<Vertex> v : vlist){
+							if(v.vertex.vertexID == e.v2){
+								findFlg = true;
+								break;
+							}
+						}
+						if(findFlg){
+							nodes.get(i).addRelationNodeId(e.v2);
+							//System.out.println(nodes.get(i).nodeId+" add "+e.v2);
+						}
 					}
 					if (nodes.get(i).getNodeId()==e.v2) {
-						nodes.get(i).addRelationNodeId(e.v1);
+						//
+						boolean findFlg = false;
+						for(Tree.Node<Vertex> v : vlist){
+							if(v.vertex.vertexID == e.v1){
+								findFlg = true;
+								break;
+							}
+						}
+						if(findFlg){
+							nodes.get(i).addRelationNodeId(e.v1);
+							//System.out.println(nodes.get(i).nodeId+" add "+e.v1);
+						}
+							
 					}
 				}
 			}
@@ -66,7 +87,7 @@ public class SkyPath {
 			e.printStackTrace();
 		}
 	}
-	public void inputData() {
+	public void inputData(String nodeFile,String edgeFile) {
 		try {
 			FileReader nodeFileReader = new FileReader(nodeFile);
 			BufferedReader nodeBufferReader = new BufferedReader(nodeFileReader);
@@ -109,8 +130,8 @@ public class SkyPath {
 		nodes = new ArrayList<SkyNode>();
 		edges = new ArrayList<SkyEdge>();
 		stack = new Stack<SkyNode>();
-		pathSet = new ArrayList<Object[]>();
-		multipointSkypathSet = new ArrayList<Object[]>();
+		pathSet = new ArrayList<SkyNode[]>();
+		multipointSkypathSet = new ArrayList<SkyNode[]>();
 		queue = new PriorityQueue<Integer>();
 	}
 
@@ -125,7 +146,7 @@ public class SkyPath {
 	}
 
 	public void showAndSavePath() {
-		Object[] o = stack.toArray();
+		SkyNode[] o = stack.toArray(new SkyNode[stack.size()]);
 		/*
 		 * for (int i = 0; i < o.length; i++) { Node nNode = (Node) o[i];
 		 * 
@@ -292,7 +313,7 @@ public class SkyPath {
 	}
 
 	public void multipointSkyline(int[] startPoint, int[] endPoint) {
-		multipointSkypathSet = new ArrayList<Object[]>();
+		multipointSkypathSet = new ArrayList<SkyNode[]>();
 		for (int i = 0; i < startPoint.length; i++) {
 			for (int j = 0; j < endPoint.length; j++) {
 				preprocess(searchNode(startPoint[i]), searchNode(endPoint[j]));
@@ -301,14 +322,14 @@ public class SkyPath {
 					multipointSkypathSet.add(pathSet.get(k));
 				}
 				stack = new Stack<SkyNode>();
-				pathSet = new ArrayList<Object[]>();
+				pathSet = new ArrayList<SkyNode[]>();
 				min = new double[6200][edges.get(0).getCost().size()];
 				queue = new PriorityQueue<Integer>();
 				predecessor = new int[6200];
 			}
 		}
 		pathSet = multipointSkypathSet;
-		multipointSkypathSet = new ArrayList<Object[]>();
+		multipointSkypathSet = new ArrayList<SkyNode[]>();
 		for (int i = 0; i < pathSet.size(); i++) {
 			boolean isDominated = false;
 			for (int j = 0; j < pathSet.size(); j++) {
@@ -343,8 +364,12 @@ public class SkyPath {
 				for (int j = tempList.size() - 1; j >= 0; j--) {
 					ansList.add(tempList.get(j));
 				}
-				pathSet.add(ansList.toArray());
+				pathSet.add(ansList.toArray(new SkyNode[ansList.size()]));
 				break;
+			}
+			if(searchNode(temp)==null){
+				System.out.println("searchNode(temp)==null");
+				System.out.println(temp);
 			}
 			relationNodesId = searchNode(temp).getRelationNodesId();
 			for (int i = 0; i < relationNodesId.size(); i++) {

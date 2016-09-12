@@ -35,7 +35,7 @@ public class Vertex implements Comparable<Vertex> , Serializable{
 	}
 	
 	public String toString() {
-		String s = vertexID + " " + x + " " + y;
+		String s = vertexID+"";
 		return s;
 	}
 

@@ -1,5 +1,4 @@
 package test;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -9,12 +8,12 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import SkyPath.SkyNode;
 import SkyPath.SkyPath;
 import buildTree.*;
 
-public class Test {
+
+public class deserialization_test {
 	@SuppressWarnings("unchecked")
 	public static void main(String args[]) throws Exception {
 		// Object deserialization 物件反序列化
@@ -48,18 +47,15 @@ public class Test {
 		skyPath.inputData(edgeList, graphTree.root.children);
 		
 		skyPath.multipointSkyline(start, end);
-		SkyNode[][] ansNodes = skyPath.multipointSkypathSet.toArray(new SkyNode[skyPath.multipointSkypathSet.size()][]);
-		/*
+		
 		for(int i=0; i<skyPath.multipointSkypathSet.size(); i++){
-			//Object[] ans =skyPath.multipointSkypathSet.get(i);
-			
-			SkyNode[][] ansNodes = ans.toArray(new SkyNode[ans.length]);
+			SkyNode[] ans =skyPath.multipointSkypathSet.get(i);
 			System.out.println("Path "+(i+1)+" ------>");
 			for(Object a : ans){
-				System.out.println((SkyNode)a);
+				System.out.println(a);
 			}
 		}
-		*/
+		
 		
 		
 		

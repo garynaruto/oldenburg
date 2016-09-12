@@ -5,9 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public class Test2 implements Serializable {
+public class Serializable_test implements Serializable {
 	String s;
-	public Test2(String s){
+	public Serializable_test(String s){
 		this.s = s;
 	}
 	public void pp(){
@@ -16,7 +16,7 @@ public class Test2 implements Serializable {
     public static void main(String args[]) {
     	//Object serialization 物件序列化
         try {
-        	Test2 object1 = new Test2("Hello");
+        	Serializable_test object1 = new Serializable_test("Hello");
             System.out.println("物件1: " + object1);
             FileOutputStream fos = new FileOutputStream("./TestObject");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -28,10 +28,10 @@ public class Test2 implements Serializable {
         }
         //Object deserialization 物件反序列化
         try {
-        	Test2 object2;
+        	Serializable_test object2;
             FileInputStream fis = new FileInputStream("./TestObject");
             ObjectInputStream ois = new ObjectInputStream(fis);
-            object2 = (Test2) ois.readObject();
+            object2 = (Serializable_test) ois.readObject();
             ois.close();
             System.out.println("物件2: " + object2);
             object2.pp();

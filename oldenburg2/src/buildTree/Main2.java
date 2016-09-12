@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import SkyPath.SkyNode;
 import SkyPath.SkyPath;
-import test.Test2;
 
 public class Main2 {
 	public static final int node = 100;// OL.cnode100.txt
@@ -81,9 +81,10 @@ public class Main2 {
 		List<Edge> edgeList = new ArrayList<Edge>(Arrays.asList(edges));
 		// System.out.println("");
 		for (int i = 0; i < vertexs.length; i++) {
-			//System.out.println("i : "+i+" "+vertexs[i]);
+			//System.out.println("i:"+i+">"+vertexs[i].vertexID);
 			List<Vertex> addNeighbours =new ArrayList<>();
 			if (vertexs[i].level == 1) {
+				System.out.println("Level 1 "+vertexs[i].vertexID);
 				//System.out.println("level >> " + vertexs[i].vertexID+" n : "+vertexs[i].neighbours.size());
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 				treeNode.vertex = vertexs[i];
@@ -152,25 +153,36 @@ public class Main2 {
 					vertexs[i].neighbours.add(v1);
 					//System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
 				}
-				//skyline path
-				SkyPath skyPath = new SkyPath();
-				skyPath.inputData(treeNode.edges,treeNode.children);
+				/*skyline path*/
+				
+				for(Tree.Node<Vertex> v: treeNode.children){
+					//System.out.println(" ."+v.vertex);
+				}
+				for(Edge e : treeNode.edges){
+					//System.out.println(" >"+e.v1+" "+e.v2);
+				}
 				int[] allNode = new int[treeNode.children.size()];
 				for(int l=0; l<allNode.length; l++){
 					allNode[l] = treeNode.children.get(l).vertex.vertexID;
 				}
-				
+				int[] start;
+				int[] end;
+				int count;
 				for(int j=0; j<allNode.length; j++){
 					for(int k=j+1; k < allNode.length; k++){
-						
-						
-						
-						//skyPath.multipointSkyline(start, end);
+						start = new int[1];
+						start[0] = allNode[j];
+						end = Arrays.copyOfRange(allNode, k, k+1);
+						SkyPath skyPath = new SkyPath();
+						skyPath.inputData(treeNode.edges,treeNode.children);
+						skyPath.multipointSkyline(start, end);
+						count = skyPath.multipointSkypathSet.size();
+						for(int a=0; a<count; a++){
+							SkyNode[] ans =skyPath.multipointSkypathSet.get(a);
+							treeNode.skyLinePath.add(matchTreeNode(ans,treeNode.children));
+						}
 					}
 				}
-				
-				
-				
 				
 				graphTree.root.children.add(treeNode);
 			}
@@ -280,7 +292,30 @@ public class Main2 {
 					}
 					//skyline path
 					
-					
+					int[] allNode = new int[treeNode.children.size()];
+					for(int l=0; l<allNode.length; l++){
+						allNode[l] = treeNode.children.get(l).vertex.vertexID;
+					}
+					int[] start;
+					int[] end;
+					int count;
+					for(int j=0; j<allNode.length; j++){
+						for(int k=j+1; k < allNode.length; k++){
+							start = new int[1];
+							start[0] = allNode[j];
+							end = Arrays.copyOfRange(allNode, k, k+1);
+							//System.out.println(start[0]+" -> "+end[0]);
+							//System.out.println(start.length+" -> "+end.length);
+							SkyPath skyPath = new SkyPath();
+							skyPath.inputData(treeNode.edges,treeNode.children);
+							skyPath.multipointSkyline(start, end);
+							count = skyPath.multipointSkypathSet.size();
+							for(int a=0; a<count; a++){
+								SkyNode[] ans =skyPath.multipointSkypathSet.get(a);
+								treeNode.skyLinePath.add(matchTreeNode(ans,treeNode.children));
+							}
+						}
+					}
 					
 					
 					
@@ -348,35 +383,54 @@ public class Main2 {
 			if (out.v1 == v1.vertexID) {
 				if (out.v2 == v2.vertexID) {
 					edgeList.remove(out);
-					System.out.println("remove : "+out);
-					System.out.println("v1 : ");
+					//System.out.println("remove : "+out);
+					//System.out.println("v1 : ");
 					for ( Vertex t: v1.neighbours ) {
-						System.out.println(t.vertexID);
+						//System.out.println(t.vertexID);
 					}
-					System.out.println("v2 : ");
+					//System.out.println("v2 : ");
 					for ( Vertex t: v2.neighbours ) {
-						System.out.println(t.vertexID);
+						//System.out.println(t.vertexID);
 					}
 					return true;
 				}
 			} else if (out.v1 == v2.vertexID) {
 				if (out.v2 == v1.vertexID) {
 					edgeList.remove(out);
-					System.out.println("remove : "+out);
-					System.out.println("v1 : ");
+					//System.out.println("remove : "+out);
+					//System.out.println("v1 : ");
 					for ( Vertex t: v1.neighbours ) {
-						System.out.println(t.vertexID);
+						//System.out.println(t.vertexID);
 					}
-					System.out.println("v2 : ");
+					//System.out.println("v2 : ");
 					for ( Vertex t: v2.neighbours ) {
-						System.out.println(t.vertexID);
+						//System.out.println(t.vertexID);
 					}
 					return true;
 				}
 			}
 		}
-		System.out.println("remove fall : "+v1.vertexID+" "+v2.vertexID);
+		//System.out.println("remove fall : "+v1.vertexID+" "+v2.vertexID);
 		return false;
+	}
+	public static Tree.Node<Vertex>[] matchTreeNode(SkyNode[] ans,List<Tree.Node<Vertex>> l){
+		boolean foundFlg = false;
+		Tree.Node<Vertex>[] out = new Tree.Node[ans.length];
+		for(int i=0;i<ans.length;i++){
+			foundFlg = false;
+			for(int j=0; j<l.size();j++){
+				Tree.Node<Vertex> t = l.get(j);
+				if(t.vertex.vertexID == ans[i].nodeId){
+					out[i] =  t;
+					foundFlg = true;
+				}
+			}
+			if(!foundFlg){
+				System.out.println("matchTreeNode fall ");
+				System.exit(1);
+			}
+		}
+		return out;
 	}
 	public static boolean isNeighbours(int vertexID, Vertex center) {
 		for (Vertex v : center.neighbours) {
