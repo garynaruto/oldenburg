@@ -71,6 +71,16 @@ public class Tree<T> implements Serializable{
         		}
     			writer.println("> "+e);
     		}
+    		for(Node<T>[] e : skyLinePath){
+    			for(int i=0; i<count; i++){
+    				writer.print("  ");
+        		}
+    			writer.print("-");
+    			for(Node<T> t : e){
+    				writer.print(t.vertex+">");
+    			}
+    			writer.println();
+    		}
     		count--;
     		return ;
     	}

@@ -1,4 +1,5 @@
 package buildTree;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,31 +13,33 @@ public class Main2 {
 	public static final int node = 100;// OL.cnode100.txt
 	public static final int edge = 107;// OL.cedge100.txt
 	public static final int dimasion = 2;
-	//public static final String nodeFile = "./data/small/3.txt";
-	//public static final String edgeFile = "./data/small/4.txt";
+	// public static final String nodeFile = "./data/small/3.txt";
+	// public static final String edgeFile = "./data/small/4.txt";
 	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
 	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge100.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
-	public static final String writeTreeFile =  "./data/OL."+node+"tree.txt";
+	public static final String writeTreeFile = "./data/OL." + node + "tree.txt";
 	public static int rangeNum = 10;// level range
 	public static int[] range;
+
 	public static void main(String[] args) {
 		// read node and edge
 		Edge[] edges = readSkyEdge();
 		Vertex[] vertexs = readSkyVertex();
 		System.out.println(edges.length + "\n" + vertexs.length);
-		
-		for(Edge e : edges){
-			if(e ==null)System.out.println("e==null");
+
+		for (Edge e : edges) {
+			if (e == null)
+				System.out.println("e==null");
 		}
-		/*calculate range */
+		/* calculate range */
 		range = new int[rangeNum];
 		range[0] = node / rangeNum;
 		for (int i = 1; i < range.length; i++) {
 			range[i] = range[i - 1] + range[0];
 		}
 		Vertex tmp;
-		
+
 		// set neighbours
 		for (Edge e : edges) {
 			tmp = findNodeByID(e.v1, vertexs);
@@ -60,19 +63,17 @@ public class Main2 {
 		int index = 0;
 		for (int j = 0; j < vertexs.length; j++) {
 			vertexs[j].level = level;
-			if(level == 1)levelone++;
+			if (level == 1)
+				levelone++;
 			if (j > range[index] && (index + 1 < range.length)) {
 				level++;
 				index++;
 			}
 		}
-		/*small level
-		int levelone = 2;
-		vertexs[0].level = 1;
-		vertexs[1].level = 1;
-		for (int j = 1; j < vertexs.length;j++){
-		vertexs[j].level = 2; 
-		}*/
+		/*
+		 * small level int levelone = 2; vertexs[0].level = 1; vertexs[1].level
+		 * = 1; for (int j = 1; j < vertexs.length;j++){ vertexs[j].level = 2; }
+		 */
 		writeClusterFile(vertexs);
 		Tree<Vertex> graphTree = new Tree<Vertex>();
 		graphTree.root.vertex = new Vertex(0, 0, 0);
@@ -81,11 +82,12 @@ public class Main2 {
 		List<Edge> edgeList = new ArrayList<Edge>(Arrays.asList(edges));
 		// System.out.println("");
 		for (int i = 0; i < vertexs.length; i++) {
-			//System.out.println("i:"+i+">"+vertexs[i].vertexID);
-			List<Vertex> addNeighbours =new ArrayList<>();
+			// System.out.println("i:"+i+">"+vertexs[i].vertexID);
+			List<Vertex> addNeighbours = new ArrayList<>();
 			if (vertexs[i].level == 1) {
-				System.out.println("Level 1 "+vertexs[i].vertexID);
-				//System.out.println("level >> " + vertexs[i].vertexID+" n : "+vertexs[i].neighbours.size());
+				System.out.println("Level 1 " + vertexs[i].vertexID);
+				// System.out.println("level >> " + vertexs[i].vertexID+" n :
+				// "+vertexs[i].neighbours.size());
 				Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 				treeNode.vertex = vertexs[i];
 				treeNode.parent = graphTree.root;
@@ -97,9 +99,9 @@ public class Main2 {
 				for (int j = 0; j < vertexs[i].neighbours.size(); j++) {
 					Vertex a = vertexs[i].neighbours.get(j);
 					if (isContainsVertexByID(a.vertexID, vertexList)) {
-						//System.out.println("1 ");
+						// System.out.println("1 ");
 						if (a.level > 1) {
-							//System.out.println("2 ");
+							// System.out.println("2 ");
 							Tree.Node<Vertex> neighboursNode = new Tree.Node<Vertex>();
 							neighboursNode.vertex = findNodeByID(a.vertexID, vertexs);
 							neighboursNode.parent = treeNode;
@@ -107,7 +109,7 @@ public class Main2 {
 							Edge e = findEdgeByVertex(vertexs[i], a, edgeList);
 							treeNode.edges.add(e);
 							removeEdgeByVertex(vertexs[i], a, edgeList);
-							
+
 							// add neighboursEdage
 							for (int t = 0; t < a.neighbours.size(); t++) {
 								Vertex b = a.neighbours.get(t);
@@ -118,7 +120,7 @@ public class Main2 {
 										treeNode.edges.add(eDelete);
 										removeEdgeByVertex(a, b, edgeList);
 										Edge newEdge = new Edge(true, 0, vertexs[i], b, (e.dist + eDelete.dist));
-										for(int d=0; d<Main2.dimasion; d++){
+										for (int d = 0; d < Main2.dimasion; d++) {
 											newEdge.dimasion[d] = e.dimasion[d] + eDelete.dimasion[d];
 										}
 										edgeList.add(newEdge);
@@ -149,41 +151,42 @@ public class Main2 {
 						}
 					}
 				}
-				for(Vertex v1 :addNeighbours){
+				for (Vertex v1 : addNeighbours) {
 					vertexs[i].neighbours.add(v1);
-					//System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
+					// System.out.println(vertexs[i].vertexID+" add
+					// "+v1.vertexID);
 				}
-				/*skyline path*/
-				
-				for(Tree.Node<Vertex> v: treeNode.children){
-					//System.out.println(" ."+v.vertex);
+				/* skyline path */
+
+				for (Tree.Node<Vertex> v : treeNode.children) {
+					// System.out.println(" ."+v.vertex);
 				}
-				for(Edge e : treeNode.edges){
-					//System.out.println(" >"+e.v1+" "+e.v2);
+				for (Edge e : treeNode.edges) {
+					// System.out.println(" >"+e.v1+" "+e.v2);
 				}
 				int[] allNode = new int[treeNode.children.size()];
-				for(int l=0; l<allNode.length; l++){
+				for (int l = 0; l < allNode.length; l++) {
 					allNode[l] = treeNode.children.get(l).vertex.vertexID;
 				}
 				int[] start;
 				int[] end;
 				int count;
-				for(int j=0; j<allNode.length; j++){
-					for(int k=j+1; k < allNode.length; k++){
+				for (int j = 0; j < allNode.length; j++) {
+					for (int k = j + 1; k < allNode.length; k++) {
 						start = new int[1];
 						start[0] = allNode[j];
-						end = Arrays.copyOfRange(allNode, k, k+1);
+						end = Arrays.copyOfRange(allNode, k, k + 1);
 						SkyPath skyPath = new SkyPath();
-						skyPath.inputData(treeNode.edges,treeNode.children);
+						skyPath.inputData(treeNode.edges, treeNode.children);
 						skyPath.multipointSkyline(start, end);
 						count = skyPath.multipointSkypathSet.size();
-						for(int a=0; a<count; a++){
-							SkyNode[] ans =skyPath.multipointSkypathSet.get(a);
-							treeNode.skyLinePath.add(matchTreeNode(ans,treeNode.children));
+						for (int a = 0; a < count; a++) {
+							SkyNode[] ans = skyPath.multipointSkypathSet.get(a);
+							treeNode.skyLinePath.add(matchTreeNode(ans, treeNode.children));
 						}
 					}
 				}
-				
+
 				graphTree.root.children.add(treeNode);
 			}
 		}
@@ -196,22 +199,27 @@ public class Main2 {
 				graphTree.root.children.add(treeNode);
 			}
 		}
-		
+
 		System.out.println("22222");
 		int con = 1;
-		System.out.println("level one : "+levelone);
+		System.out.println("level one : " + levelone);
 
 		/*-----------------2----------------------------------------------*/
-		while(graphTree.root.children.size() > levelone){
-			//System.out.println("c : "+con++);
-			//System.out.println("graphTree.root.children.size() : "+graphTree.root.children.size());
+		while (graphTree.root.children.size() > levelone) {
+			// System.out.println("c : "+con++);
+			// System.out.println("graphTree.root.children.size() :
+			// "+graphTree.root.children.size());
 			for (int i = 0; i < graphTree.root.children.size(); i++) {
-				List<Vertex> removeNeighbours =new ArrayList<>();
+				List<Vertex> removeNeighbours = new ArrayList<>();
 				Tree.Node<Vertex> v = graphTree.root.children.get(i);
-				//System.out.println("i : "+i+" "+v.vertex);
+				// System.out.println("i : "+i+" "+v.vertex);
 				if (v.vertex.level == 1) {
-					//System.out.println(v.vertex.vertexID+" level == 1 ");
-					//System.out.println("level >> " + v.vertex.vertexID+" n : "+v.vertex.neighbours.size());
+					if(isAllNerLevel1(v)){
+						continue;
+					}
+					// System.out.println(v.vertex.vertexID+" level == 1 ");
+					// System.out.println("level >> " + v.vertex.vertexID+" n :
+					// "+v.vertex.neighbours.size());
 					Tree.Node<Vertex> treeNode = new Tree.Node<Vertex>();
 					treeNode.vertex = v.vertex;
 					v.parent = treeNode;
@@ -220,38 +228,42 @@ public class Main2 {
 					// add level 1 vertex's neighboursNode & neighboursEdage
 					for (int j = 0; j < v.vertex.neighbours.size(); j++) {
 						Vertex a = v.vertex.neighbours.get(j);
-						//System.out.println("a neighbours : "+a.vertexID);
+						// System.out.println("a neighbours : "+a.vertexID);
 						if (isContainsTreeNodeByID(a.vertexID, graphTree.root.children)) {
-							//System.out.println("1 ");
+							// System.out.println("1 ");
 							if (a.level > 1) {
-								//System.out.println("2 ");
-								Tree.Node<Vertex> neighboursNode = findTreeNodeByID(a.vertexID, graphTree.root.children);
+								// System.out.println("2 ");
+								Tree.Node<Vertex> neighboursNode = findTreeNodeByID(a.vertexID,
+										graphTree.root.children);
 								neighboursNode.parent = treeNode;
 								treeNode.children.add(neighboursNode);
 								Edge e = findEdgeByVertex(v.vertex, a, edgeList);
-								if(e!=null && removeEdgeByVertex(v.vertex, a, edgeList)){
+								if (e != null && removeEdgeByVertex(v.vertex, a, edgeList)) {
 									treeNode.edges.add(e);
 								}
-								if(e==null){
+								if (e == null) {
 									System.out.println("continue");
 									continue;
 								}
 								// add neighboursEdage
-								//System.out.println("a n : "+a.neighbours.size());
+								// System.out.println("a n :
+								// "+a.neighbours.size());
 								for (int t = 0; t < a.neighbours.size(); t++) {
 									Vertex b = a.neighbours.get(t);
-									//System.out.println("b neighbours : "+b.vertexID);
+									// System.out.println("b neighbours :
+									// "+b.vertexID);
 									if (b.vertexID != v.vertex.vertexID && !isNeighbours(b.vertexID, v.vertex)) {
-										//System.out.println("b 1");
+										// System.out.println("b 1");
 										Edge eDelete = null;
 										eDelete = findEdgeByVertex(a, b, edgeList);
 										if (eDelete != null) {
-											//System.out.println("b 2");
-											//System.out.println("eDelete : "+eDelete.edgeID);
+											// System.out.println("b 2");
+											// System.out.println("eDelete :
+											// "+eDelete.edgeID);
 											treeNode.edges.add(eDelete);
 											removeEdgeByVertex(a, b, edgeList);
 											Edge newEdge = new Edge(true, 0, v.vertex, b, (e.dist + eDelete.dist));
-											for(int d=0; d<Main2.dimasion; d++){
+											for (int d = 0; d < Main2.dimasion; d++) {
 												newEdge.dimasion[d] = e.dimasion[d] + eDelete.dimasion[d];
 											}
 											edgeList.add(newEdge);
@@ -261,106 +273,117 @@ public class Main2 {
 										} else {
 											System.out.println("eDelete == null");
 										}
-									} else if (b.vertexID != v.vertex.vertexID && isNeighbours(b.vertexID,v.vertex)){
+									} else if (b.vertexID != v.vertex.vertexID && isNeighbours(b.vertexID, v.vertex)) {
 										Edge eDelete = null;
 										eDelete = findEdgeByVertex(a, b, edgeList);
-										//System.out.println("b 1.");
+										// System.out.println("b 1.");
 										if (eDelete != null) {
-											//System.out.println("b 2.");
+											// System.out.println("b 2.");
 											treeNode.edges.add(eDelete);
 											removeEdgeByVertex(a, b, edgeList);
 											b.neighbours.remove(a);
-											
+
 										} else {
 											System.out.println("eDelete2 == null");
 										}
 									}
 								}
 								v.vertex.neighbours.remove(a);
-								j--;// when we remove neighbours the size() will -1
-								//int indexi = graphTree.root.children.indexOf(a);
+								j--;// when we remove neighbours the size() will
+									// -1
+								// int indexi =
+								// graphTree.root.children.indexOf(a);
 								removeTreeNodeByID(a.vertexID, graphTree.root.children);
 								a.neighbours.remove(v);
 							} else {
-								
+
 								Edge e = findEdgeByVertex(v.vertex, a, edgeList);
-								if(e != null){
+								if (e != null) {
 									treeNode.edges.add(e);
 								}
 							}
 						}
 					}
-					//skyline path
-					
+					// skyline path
+
 					int[] allNode = new int[treeNode.children.size()];
-					for(int l=0; l<allNode.length; l++){
+					for (int l = 0; l < allNode.length; l++) {
 						allNode[l] = treeNode.children.get(l).vertex.vertexID;
 					}
 					int[] start;
 					int[] end;
 					int count;
-					for(int j=0; j<allNode.length; j++){
-						for(int k=j+1; k < allNode.length; k++){
+					for (int j = 0; j < allNode.length; j++) {
+						for (int k = j + 1; k < allNode.length; k++) {
 							start = new int[1];
 							start[0] = allNode[j];
-							end = Arrays.copyOfRange(allNode, k, k+1);
-							//System.out.println(start[0]+" -> "+end[0]);
-							//System.out.println(start.length+" -> "+end.length);
+							end = Arrays.copyOfRange(allNode, k, k + 1);
+							// System.out.println(start[0]+" -> "+end[0]);
+							// System.out.println(start.length+" ->
+							// "+end.length);
 							SkyPath skyPath = new SkyPath();
-							skyPath.inputData(treeNode.edges,treeNode.children);
+							skyPath.inputData(treeNode.edges, treeNode.children);
 							skyPath.multipointSkyline(start, end);
 							count = skyPath.multipointSkypathSet.size();
-							for(int a=0; a<count; a++){
-								SkyNode[] ans =skyPath.multipointSkypathSet.get(a);
-								treeNode.skyLinePath.add(matchTreeNode(ans,treeNode.children));
+							for (int a = 0; a < count; a++) {
+								SkyNode[] ans = skyPath.multipointSkypathSet.get(a);
+								treeNode.skyLinePath.add(matchTreeNode(ans, treeNode.children));
 							}
 						}
 					}
-					
-					
-					
-					graphTree.root.children.add(0,treeNode);
+
+					graphTree.root.children.add(0, treeNode);
 					graphTree.root.children.remove(v);
-					for(Vertex v1 :removeNeighbours){
+					for (Vertex v1 : removeNeighbours) {
 						v.vertex.neighbours.add(v1);
-						//System.out.println(vertexs[i].vertexID+" add "+v1.vertexID);
+						// System.out.println(vertexs[i].vertexID+" add
+						// "+v1.vertexID);
 					}
-				}	
+				}
 			}
 		}
-		
+
 		System.out.println(">remain Edge=====================");
 		for (Edge e : edgeList) {
 			System.out.println(e);
 		}
 		System.out.println(">Tree Vertex===================");
-		for (Tree.Node<Vertex> t: graphTree.root.children) {
+		for (Tree.Node<Vertex> t : graphTree.root.children) {
 			System.out.println(t.vertex);
 		}
 		System.out.println(">tree============================");
 		graphTree.root.printTree(0);
 		writeTreeFile(edgeList, graphTree);
-		
-		//Object serialization 物件序列化
-        try {
-        	System.out.println("物件1: graphTree");
-            FileOutputStream fos = new FileOutputStream("./data/SerializationGraphTree");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(graphTree);
-            oos.flush();
-            oos.close();
-            System.out.println("物件2: edgeList");
-            fos = new FileOutputStream("./data/SerializationEdgeList");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(edgeList);
-            oos.flush();
-            oos.close();
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
+
+		// Object serialization 物件序列化
+		try {
+			System.out.println("物件1: graphTree");
+			FileOutputStream fos = new FileOutputStream("./data/SerializationGraphTree");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(graphTree);
+			oos.flush();
+			oos.close();
+			System.out.println("物件2: edgeList");
+			fos = new FileOutputStream("./data/SerializationEdgeList");
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(edgeList);
+			oos.flush();
+			oos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	public static boolean isContainsTreeNodeByID(int vertexID,
-			List<Tree.Node<Vertex>> l) {
+
+	public static boolean isAllNerLevel1(Tree.Node<Vertex> t) {
+		for(Vertex v :t.vertex.neighbours){
+			if(v.level != 1){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean isContainsTreeNodeByID(int vertexID, List<Tree.Node<Vertex>> l) {
 		for (Tree.Node<Vertex> v : l) {
 			if (v.vertex.vertexID == vertexID) {
 				return true;
@@ -368,6 +391,7 @@ public class Main2 {
 		}
 		return false;
 	}
+
 	public static boolean isContainsVertexByID(int vertexID, List<Vertex> l) {
 		for (Vertex v : l) {
 			if (v.vertexID == vertexID) {
@@ -376,6 +400,7 @@ public class Main2 {
 		}
 		return false;
 	}
+
 	public static boolean removeEdgeByVertex(Vertex v1, Vertex v2, List<Edge> edgeList) {
 		Edge out;
 		for (int i = 0; i < edgeList.size(); i++) {
@@ -383,55 +408,57 @@ public class Main2 {
 			if (out.v1 == v1.vertexID) {
 				if (out.v2 == v2.vertexID) {
 					edgeList.remove(out);
-					//System.out.println("remove : "+out);
-					//System.out.println("v1 : ");
-					for ( Vertex t: v1.neighbours ) {
-						//System.out.println(t.vertexID);
+					// System.out.println("remove : "+out);
+					// System.out.println("v1 : ");
+					for (Vertex t : v1.neighbours) {
+						// System.out.println(t.vertexID);
 					}
-					//System.out.println("v2 : ");
-					for ( Vertex t: v2.neighbours ) {
-						//System.out.println(t.vertexID);
+					// System.out.println("v2 : ");
+					for (Vertex t : v2.neighbours) {
+						// System.out.println(t.vertexID);
 					}
 					return true;
 				}
 			} else if (out.v1 == v2.vertexID) {
 				if (out.v2 == v1.vertexID) {
 					edgeList.remove(out);
-					//System.out.println("remove : "+out);
-					//System.out.println("v1 : ");
-					for ( Vertex t: v1.neighbours ) {
-						//System.out.println(t.vertexID);
+					// System.out.println("remove : "+out);
+					// System.out.println("v1 : ");
+					for (Vertex t : v1.neighbours) {
+						// System.out.println(t.vertexID);
 					}
-					//System.out.println("v2 : ");
-					for ( Vertex t: v2.neighbours ) {
-						//System.out.println(t.vertexID);
+					// System.out.println("v2 : ");
+					for (Vertex t : v2.neighbours) {
+						// System.out.println(t.vertexID);
 					}
 					return true;
 				}
 			}
 		}
-		//System.out.println("remove fall : "+v1.vertexID+" "+v2.vertexID);
+		// System.out.println("remove fall : "+v1.vertexID+" "+v2.vertexID);
 		return false;
 	}
-	public static Tree.Node<Vertex>[] matchTreeNode(SkyNode[] ans,List<Tree.Node<Vertex>> l){
+
+	public static Tree.Node<Vertex>[] matchTreeNode(SkyNode[] ans, List<Tree.Node<Vertex>> l) {
 		boolean foundFlg = false;
 		Tree.Node<Vertex>[] out = new Tree.Node[ans.length];
-		for(int i=0;i<ans.length;i++){
+		for (int i = 0; i < ans.length; i++) {
 			foundFlg = false;
-			for(int j=0; j<l.size();j++){
+			for (int j = 0; j < l.size(); j++) {
 				Tree.Node<Vertex> t = l.get(j);
-				if(t.vertex.vertexID == ans[i].nodeId){
-					out[i] =  t;
+				if (t.vertex.vertexID == ans[i].nodeId) {
+					out[i] = t;
 					foundFlg = true;
 				}
 			}
-			if(!foundFlg){
+			if (!foundFlg) {
 				System.out.println("matchTreeNode fall ");
 				System.exit(1);
 			}
 		}
 		return out;
 	}
+
 	public static boolean isNeighbours(int vertexID, Vertex center) {
 		for (Vertex v : center.neighbours) {
 			if (v.vertexID == vertexID) {
@@ -440,8 +467,8 @@ public class Main2 {
 		}
 		return false;
 	}
-	public static boolean removeTreeNodeByID(int vertexID,
-			List<Tree.Node<Vertex>> l) {
+
+	public static boolean removeTreeNodeByID(int vertexID, List<Tree.Node<Vertex>> l) {
 		Tree.Node<Vertex> tmp;
 		for (int i = 0; i < l.size(); i++) {
 			tmp = l.get(i);
@@ -452,6 +479,7 @@ public class Main2 {
 		}
 		return false;
 	}
+
 	public static boolean removeVertexByID(int vertexID, List<Vertex> l) {
 		Vertex tmp;
 		for (int i = 0; i < l.size(); i++) {
@@ -463,8 +491,8 @@ public class Main2 {
 		}
 		return false;
 	}
-	public static Tree.Node<Vertex> findTreeNodeByID(int ID,
-			List<Tree.Node<Vertex>> l) {
+
+	public static Tree.Node<Vertex> findTreeNodeByID(int ID, List<Tree.Node<Vertex>> l) {
 		for (int i = 0; i < l.size(); i++) {
 			Tree.Node<Vertex> v = l.get(i);
 			if (v.vertex.vertexID == ID) {
@@ -473,6 +501,7 @@ public class Main2 {
 		}
 		return null;
 	}
+
 	public static Vertex findNodeByID(int ID, Vertex[] nodes) {
 		for (int i = 0; i < nodes.length; i++) {
 			if (nodes[i].vertexID == ID) {
@@ -481,6 +510,7 @@ public class Main2 {
 		}
 		return null;
 	}
+
 	public static Edge findEdgeByVertex(Vertex v1, Vertex v2, List<Edge> edgeList) {
 		for (int i = 0; i < edgeList.size(); i++) {
 			Edge out = edgeList.get(i);
@@ -496,10 +526,11 @@ public class Main2 {
 		}
 		return null;
 	}
+
 	public static Edge[] readedge() {
 		System.out.println("readedge");
 		Edge[] out = new Edge[edge];
-		int edgeID , a, b;
+		int edgeID, a, b;
 		double distance;
 		try {
 			File file = new File(edgeFile);
@@ -517,6 +548,7 @@ public class Main2 {
 		}
 		return out;
 	}
+
 	public static Edge[] readSkyEdge() {
 		System.out.println("readSkyedge");
 		Edge[] out = new Edge[edge];
@@ -532,12 +564,12 @@ public class Main2 {
 				edgeID = s.nextInt();
 				a = s.nextInt();
 				b = s.nextInt();
-				for(int j=0; j<Main2.dimasion; j++){
+				for (int j = 0; j < Main2.dimasion; j++) {
 					dimasion[j] = s.nextDouble();
-					distance+=dimasion[j];
+					distance += dimasion[j];
 				}
 				out[i] = new Edge(edgeID, a, b, distance, dimasion);
-				//if(out[i] == null)System.out.println("edge "+i);
+				// if(out[i] == null)System.out.println("edge "+i);
 			}
 			s.close();
 		} catch (Exception e) {
@@ -545,6 +577,7 @@ public class Main2 {
 		}
 		return out;
 	}
+
 	public static Vertex[] readSkyVertex() {
 		System.out.println("readSkyVertex");
 		Vertex[] out = new Vertex[node];
@@ -568,7 +601,7 @@ public class Main2 {
 		}
 		return out;
 	}
-	
+
 	public Vertex[] readVertex() {
 		Vertex[] out = new Vertex[node];
 		int nodeNum = 0;
@@ -590,11 +623,12 @@ public class Main2 {
 		}
 		return out;
 	}
-	public static void writeClusterFile(Vertex[] vertexs){
+
+	public static void writeClusterFile(Vertex[] vertexs) {
 		try {
 			PrintWriter writer = new PrintWriter(writeClusterFile, "UTF-8");
-			for(Vertex v:vertexs){
-				writer.println(String.format("%d %d",v.vertexID, v.level ));
+			for (Vertex v : vertexs) {
+				writer.println(String.format("%d %d", v.vertexID, v.level));
 			}
 			writer.flush();
 			writer.close();
@@ -602,7 +636,8 @@ public class Main2 {
 			e.printStackTrace();
 		}
 	}
-	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree){
+
+	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree) {
 		try {
 			PrintWriter writer = new PrintWriter(writeTreeFile, "UTF-8");
 			writer.println(">remain Edge=====================");
@@ -610,7 +645,7 @@ public class Main2 {
 				writer.println(e);
 			}
 			writer.println(">Tree Vertex===================");
-			for (Tree.Node<Vertex> t: graphTree.root.children) {
+			for (Tree.Node<Vertex> t : graphTree.root.children) {
 				writer.println(t.vertex);
 			}
 			writer.println(">tree============================");
@@ -621,7 +656,8 @@ public class Main2 {
 			e.printStackTrace();
 		}
 	}
-	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree, String file){
+
+	public static void writeTreeFile(List<Edge> el, Tree<Vertex> graphTree, String file) {
 		try {
 			PrintWriter writer = new PrintWriter(file, "UTF-8");
 			writer.println(">remain Edge=====================");
@@ -629,7 +665,7 @@ public class Main2 {
 				writer.println(e);
 			}
 			writer.println(">Tree Vertex===================");
-			for (Tree.Node<Vertex> t: graphTree.root.children) {
+			for (Tree.Node<Vertex> t : graphTree.root.children) {
 				writer.println(t.vertex);
 			}
 			writer.println(">tree============================");
