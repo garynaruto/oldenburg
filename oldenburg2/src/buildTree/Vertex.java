@@ -15,7 +15,7 @@ public class Vertex implements Comparable<Vertex> , Serializable{
 	public int dist = Integer.MAX_VALUE; // MAX_VALUE assumed to be infinity
 	public Vertex previous = null;// ¤W­Ó Vertex
 	public ArrayList<Vertex> neighbours = new ArrayList<Vertex>();
-
+	public boolean visited = false;
 	public Vertex(int name) {
 		this.vertexID = name;
 	}
