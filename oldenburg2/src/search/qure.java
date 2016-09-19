@@ -13,8 +13,8 @@ import buildTree.Vertex;
 import buildTree.Tree.Node;
 
 public class qure {
-	public static final int start = 2938;
-	public static final int end = 3152;
+	public static final int start = 3152;
+	public static final int end = 2945;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 
@@ -53,28 +53,30 @@ public class qure {
 				if(containSmallGraph(n)){//if node has small graph
 					if(n.vertex.vertexID == starNode.vertex.vertexID){
 						System.out.println(">>> "+n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans = findsmallpath(start, n, allpath.get(i+1));
+						List<List<Node<Vertex>>> ans = findsmallpath(true,start, n, allpath.get(i+1));
 						allpath.remove(0);
 						//one skyline
 						List<Node<Vertex>> l = ans.get(0);
 						allpath.addAll(0, l);
-						
+						for(Node<Vertex> a2:ans.get(0)){
+							System.out.println("s="+a2.vertex.vertexID);
+						}
 						/* all skyline 
 						for(int j=0;j<ans.size(); j++){
 							List<Node<Vertex>> l = ans.get(j);
 							
 						}
-						*/
+						
 						for(List<Node<Vertex>> a1 :ans){
 							for(Node<Vertex> a2:a1){
 								System.out.println("s="+a2.vertex.vertexID);
 							}
-						}
+						}*/
 						
 					}
 					else if(n.vertex.vertexID == endNode.vertex.vertexID){
 						System.out.println("end "+n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans =findsmallpath(end, n, allpath.get(i-1));
+						List<List<Node<Vertex>>> ans =findsmallpath(false,end, n, allpath.get(i-1));
 						
 						allpath.remove(allpath.size()-1);
 						//one skyline
@@ -87,13 +89,12 @@ public class qure {
 							
 						}
 						*/
-						
 						for(List<Node<Vertex>> a1 :ans){
 							for(Node<Vertex> a2:a1){
 								System.out.println("e="+a2.vertex.vertexID);
 							}
 						}
-						
+						break;
 					}
 					else{
 						System.out.println("   ."+n.vertex.vertexID);
@@ -141,7 +142,7 @@ public class qure {
 			}
 		}*/
 	}
-	public static List<List<Node<Vertex>>> findsmallpath(int objectID, Node<Vertex> n, Node<Vertex> linkedn) {
+	public static List<List<Node<Vertex>>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn) {
 		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
 		
 		if(!n.isChildren()){
@@ -149,7 +150,50 @@ public class qure {
 			out.add(tmp);
 			System.out.println("Find no children");
 			return out;
+		}
+		else if(n.children.size() == 1){
+			out.add(new LinkedList<Node<Vertex>>(n.children));
+			return out;
+		}else{
+			//find map edge node
+			int mapLastId=0;
+			int mapNextId=0;
+			boolean findMapFlg1 = false;
+			boolean findMapFlg2 = false;
+			for(Edge e :n.edges){
+				if(lastn.vertex.vertexID == e.v1){
+					mapLastId = e.v2;
+					findMapFlg1 = true;
+				}else if(lastn.vertex.vertexID == e.v2){
+					mapLastId = e.v1;
+					findMapFlg1 = true;
+				}if(nextn.vertex.vertexID == e.v1){
+					mapNextId = e.v2;
+					findMapFlg2 = true;
+				}else if(nextn.vertex.vertexID == e.v2){
+					mapNextId = e.v1;
+					findMapFlg2 = true;
+				}
+				
+			}
+			if(findMapFlg1 == false || findMapFlg2 == false ){
+				System.out.println("find Map node Flg false");
+				System.exit(1);
+			}
+			//find skyline
 			
+		}
+		
+		return out;
+	}
+	public static List<List<Node<Vertex>>> findsmallpath(boolean starflg, int objectID, Node<Vertex> n, Node<Vertex> linkedn) {
+		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
+		
+		if(!n.isChildren()){
+			LinkedList<Node<Vertex>> tmp =new LinkedList<Node<Vertex>>();
+			out.add(tmp);
+			System.out.println("Find no children");
+			return out;
 		}
 		else if(n.children.size() == 1){
 			out.add(new LinkedList<Node<Vertex>>(n.children));
@@ -217,17 +261,36 @@ public class qure {
 						}
 					} 
 				}
-			}else{
-				return out;
 			}
+			//check and exchange order
+			if(starflg){
+				for(int i=0; i<out.size(); i++){
+					List<Node<Vertex>> list = out.get(i);
+					if(list.get(0).vertex.vertexID == mapNodeid){
+						for(int j = 0; j < list.size() / 2; j++)
+						{
+							Node<Vertex> temp = list.get(j);
+						    list.set(j, list.get(list.size() - j - 1));
+						    list.set(list.size()-j-1, temp);
+						}
+					}
+				}
+			}else{
+				for(int i=0; i<out.size(); i++){
+					List<Node<Vertex>> list = out.get(i);
+					if(list.get(list.size()-1).vertex.vertexID == mapNodeid){
+						for(int j = 0; j < list.size() / 2; j++)
+						{
+							Node<Vertex> temp = list.get(j);
+						    list.set(j, list.get(list.size() - j - 1));
+						    list.set(list.size()-j-1, temp);
+						}
+					}
+				}
+			}
+			return out;
 		}
-		return out;
-	}
-
-	public static List<Node<Vertex>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn) {
-		List<Node<Vertex>> out = new ArrayList<>();
-
-		return out;
+		
 	}
 	public static boolean containSmallGraph(List<Node<Vertex>> path) {
 		for (Node<Vertex> n : path) {
