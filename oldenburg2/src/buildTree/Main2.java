@@ -19,7 +19,7 @@ public class Main2 {
 	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge100.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
 	public static final String writeTreeFile = "./data/OL." + node + "tree.txt";
-	public static int rangeNum = 10;// level range
+	public static int rangeNum = 21;// level range
 	public static int[] range;
 
 	public static void main(String[] args) {

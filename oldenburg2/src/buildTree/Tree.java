@@ -102,6 +102,22 @@ public class Tree<T> implements Serializable {
     		
     		return;
     	}
+		
+		public Edge findEdgeByVertex(int v1,int v2) {
+			for (int i = 0; i <  edges.size(); i++) {
+				Edge out =  edges.get(i);
+				if (out.v1 == v1) {
+					if (out.v2 == v2) {
+						return out;
+					}
+				} else if (out.v1 == v2) {
+					if (out.v2 == v1) {
+						return out;
+					}
+				}
+			}
+			return null;
+		}
 
 		public boolean isChildren() {
 			return !this.children.isEmpty();

@@ -14,8 +14,8 @@ import buildTree.Vertex;
 import buildTree.Tree.Node;
 
 public class qure {
-	public static final int start = 3152;
-	public static final int end = 2945;
+	public static final int start = 2945;
+	public static final int end = 3152;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 
@@ -31,6 +31,7 @@ public class qure {
 		ois = new ObjectInputStream(fis);
 		edgeList = (List<Edge>) ois.readObject();
 		ois.close();
+		fis.close();
 		System.out.println("deserialization.");
 
 		// find belong level 1 node
@@ -43,10 +44,10 @@ public class qure {
 		// find all path
 		DFS d = new DFS(graphTree);
 		List<Node<Vertex>> allpath = d.dfs(starNode, endNode);
-		System.out.println(">>>>");
-		for (int i = 0; i < allpath.size(); i++) {
+		System.out.println("");		
+		/*for (int i = 0; i < allpath.size(); i++) {
 			System.out.println("" + allpath.get(i).vertex.vertexID);
-		}
+		}*/
 		while (containSmallGraph(allpath)) {
 			System.out.println(">===================================<");
 			for (int i = 0; i < allpath.size(); i++) {
@@ -95,8 +96,14 @@ public class qure {
 						break;
 					} else {
 						System.out.println("   ." + n.vertex.vertexID);
-						// findsmallpath(n, allpath.get(i-1), allpath.get(i+1));
-
+						List<List<Node<Vertex>>> ans = findsmallpath(n, allpath.get(i - 1), allpath.get(i + 1), c);
+						
+						allpath.remove(i);
+						List<Node<Vertex>> l = ans.get(0);
+						allpath.addAll(i, l);
+						for (Node<Vertex> a2 : ans.get(0)) {
+							// System.out.println("m=" + a2.vertex.vertexID);
+						}
 					}
 				}
 
@@ -106,7 +113,6 @@ public class qure {
 				System.out.print("->" + n.vertex.vertexID);
 			}
 			System.out.println();
-			Thread.sleep(1000);
 		}
 
 		/*
@@ -122,9 +128,9 @@ public class qure {
 		 */
 	}
 
-	public static List<List<Node<Vertex>>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn) {
+	public static List<List<Node<Vertex>>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn,Cluster c) {
 		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
-
+		System.out.println("findsmallpath2 :" + lastn.vertex.vertexID + " " + n.vertex.vertexID + " " + nextn.vertex.vertexID);
 		if (!n.isChildren()) {
 			LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
 			out.add(tmp);
@@ -156,9 +162,38 @@ public class qure {
 				}
 
 			}
+			// link node didn't found
 			if (findMapFlg1 == false || findMapFlg2 == false) {
-				System.out.println("find Map node Flg false");
-				System.exit(1);
+				if (findMapFlg1 == false) {
+					int last = c.findClusterId(lastn.vertex.vertexID);
+					for (Edge e : n.edges) {
+						if (last == e.v1) {
+							mapLastId = e.v2;
+							findMapFlg1 = true;
+						} else if (last == e.v2) {
+							mapLastId = e.v1;
+							findMapFlg1 = true;
+						}
+					}
+
+				}
+				if (findMapFlg2 == false) {
+					int Next = c.findClusterId(nextn.vertex.vertexID);
+					for (Edge e : n.edges) {
+						if (Next == e.v1) {
+							mapNextId = e.v2;
+							findMapFlg2 = true;
+						} else if (Next == e.v2) {
+							mapNextId = e.v1;
+							findMapFlg2 = true;
+						}
+					}
+				}
+
+				System.out.println(findMapFlg1 + " " + findMapFlg2);
+				System.out.println(mapLastId + " " + mapNextId);
+				System.out.println("find Map node Flg false 2");
+				// System.exit(1);
 			}
 			// find skyline
 			if (mapNextId == mapLastId) {
@@ -178,18 +213,28 @@ public class qure {
 				}
 				out.add(tmp);
 			} else {
+				boolean foundflg = false;
 				for (int i = 0; i < n.skyLinePath.size(); i++) {
 					Node<Vertex>[] skyArray = n.skyLinePath.get(i);
 					if (skyArray[0].vertex.vertexID == mapLastId) {
 						if (skyArray[skyArray.length - 1].vertex.vertexID == mapNextId) {
 							out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
+							foundflg = true;
 						}
 					} else if (skyArray[skyArray.length - 1].vertex.vertexID == mapLastId) {
 						if (skyArray[0].vertex.vertexID == mapNextId) {
 							out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
+							foundflg = true;
 						}
 					}
 				}
+				if (!foundflg) {
+					System.out.println("!foundflg");
+					System.exit(1);
+				} else {
+
+				}
+
 			}
 			// check and exchange order
 
@@ -209,9 +254,9 @@ public class qure {
 		return out;
 	}
 
-	public static List<List<Node<Vertex>>> findsmallpath(boolean starflg, int objectID, Node<Vertex> n,
-			Node<Vertex> linkedn) {
+	public static List<List<Node<Vertex>>> findsmallpath(boolean starflg, int objectID, Node<Vertex> n,Node<Vertex> linkedn) {
 		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
+		System.out.println("findsmallpath1 :" + n.vertex.vertexID + " " + linkedn.vertex.vertexID);
 
 		if (!n.isChildren()) {
 			LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
@@ -235,11 +280,12 @@ public class qure {
 				}
 			}
 			if (findMapFlg == false) {
-				System.out.println("find Map node Flg false");
+				System.out.println("find Map node Flg false 1");
 				System.exit(1);
+			} else {
+				System.out.println("mapNodeid = " + mapNodeid);
 			}
 			// find skyline
-
 			if (objectID == mapNodeid) {
 				LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
 				boolean foundflg = false;
@@ -253,68 +299,87 @@ public class qure {
 				if (!foundflg) {
 					System.out.println("objectID == mapNodeid  !foundflg");
 					System.exit(1);
-					;
 				}
 				out.add(tmp);
-			}
-			boolean nidflg = false;
-			for (int i = 0; i < n.skyLinePath.size(); i++) {
-				Node<Vertex>[] skyArray = n.skyLinePath.get(i);
-				if (skyArray[0].vertex.vertexID == mapNodeid) {
-					if (skyArray[skyArray.length - 1].vertex.vertexID == objectID) {
-						out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
-						nidflg = true;
-					}
-				} else if (skyArray[skyArray.length - 1].vertex.vertexID == mapNodeid) {
-					if (skyArray[0].vertex.vertexID == objectID) {
-						out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
-						nidflg = true;
-					}
-				}
-			}
-			if (!nidflg) {
+			} else {
+
+				boolean nidflg = false;
 				for (int i = 0; i < n.skyLinePath.size(); i++) {
 					Node<Vertex>[] skyArray = n.skyLinePath.get(i);
 					if (skyArray[0].vertex.vertexID == mapNodeid) {
-						if (skyArray[skyArray.length - 1].vertex.vertexID == n.vertex.vertexID) {
+						if (skyArray[skyArray.length - 1].vertex.vertexID == objectID) {
 							out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
+							nidflg = true;
 						}
 					} else if (skyArray[skyArray.length - 1].vertex.vertexID == mapNodeid) {
-						if (skyArray[0].vertex.vertexID == n.vertex.vertexID) {
+						if (skyArray[0].vertex.vertexID == objectID) {
 							out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
+							nidflg = true;
 						}
 					}
 				}
-			}
-			// check and exchange order
-			if (starflg) {
-				for (int i = 0; i < out.size(); i++) {
-					List<Node<Vertex>> list = out.get(i);
-					if (list.get(0).vertex.vertexID == mapNodeid) {
-						for (int j = 0; j < list.size() / 2; j++) {
-							Node<Vertex> temp = list.get(j);
-							list.set(j, list.get(list.size() - j - 1));
-							list.set(list.size() - j - 1, temp);
+				if (!nidflg) {
+					System.out.println("!contain object");
+					boolean containflg = false;
+					for (int i = 0; i < n.skyLinePath.size(); i++) {
+						Node<Vertex>[] skyArray = n.skyLinePath.get(i);
+						if (skyArray[0].vertex.vertexID == mapNodeid) {
+							if (skyArray[skyArray.length - 1].vertex.vertexID == n.vertex.vertexID) {
+								out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
+								containflg = true;
+							}
+						} else if (skyArray[skyArray.length - 1].vertex.vertexID == mapNodeid) {
+							if (skyArray[0].vertex.vertexID == n.vertex.vertexID) {
+								out.add(new LinkedList<Node<Vertex>>(Arrays.asList(skyArray)));
+								containflg = true;
+							}
 						}
 					}
+					if(!containflg && mapNodeid == n.vertex.vertexID){
+						System.out.println("!contain sky line");
+						LinkedList<Node<Vertex>> level1= new LinkedList<Node<Vertex>>();
+						level1.add(findNodeByID(mapNodeid, n));
+						out.add(level1);
+					}
+					
 				}
-			} else {
-				for (int i = 0; i < out.size(); i++) {
-					List<Node<Vertex>> list = out.get(i);
-					if (list.get(list.size() - 1).vertex.vertexID == mapNodeid) {
-						for (int j = 0; j < list.size() / 2; j++) {
-							Node<Vertex> temp = list.get(j);
-							list.set(j, list.get(list.size() - j - 1));
-							list.set(list.size() - j - 1, temp);
+				// check and exchange order
+				if (starflg) {
+					for (int i = 0; i < out.size(); i++) {
+						List<Node<Vertex>> list = out.get(i);
+						if (list.get(0).vertex.vertexID == mapNodeid) {
+							for (int j = 0; j < list.size() / 2; j++) {
+								Node<Vertex> temp = list.get(j);
+								list.set(j, list.get(list.size() - j - 1));
+								list.set(list.size() - j - 1, temp);
+							}
+						}
+					}
+				} else {
+					for (int i = 0; i < out.size(); i++) {
+						List<Node<Vertex>> list = out.get(i);
+						if (list.get(list.size() - 1).vertex.vertexID == mapNodeid) {
+							for (int j = 0; j < list.size() / 2; j++) {
+								Node<Vertex> temp = list.get(j);
+								list.set(j, list.get(list.size() - j - 1));
+								list.set(list.size() - j - 1, temp);
+							}
 						}
 					}
 				}
 			}
 			return out;
+		
 		}
-
 	}
-
+	public static Node<Vertex> findNodeByID(int ID,Node<Vertex> n) {
+		for (int i = 0; i < n.children.size(); i++) {
+			if (n.children.get(i).vertex.vertexID == ID) {
+				return n.children.get(i);
+			}
+		}
+		return null;
+	}
 	public static boolean containSmallGraph(List<Node<Vertex>> path) {
 		for (Node<Vertex> n : path) {
 			if (n.skyLinePath.size() > 0 || n.children.size() > 0 || n.edges.size() > 0) {

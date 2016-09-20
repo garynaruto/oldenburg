@@ -49,4 +49,19 @@ public class Cluster {
 		}
 		return -1;
 	}
+	public int findClusterId(int objectID) {
+		
+		for (int i = 0; i < graphTree.root.children.size(); i++) {
+			if(objectID == graphTree.root.children.get(i).vertex.vertexID ){
+				return graphTree.root.children.get(i).vertex.vertexID;
+			}
+			for (Vertex v : l.get(i)) {
+				//System.out.println("  ." + v.vertexID);
+				if(v.vertexID == objectID ){
+					return graphTree.root.children.get(i).vertex.vertexID;
+				}
+			}
+		}
+		return -1;
+	}
 }

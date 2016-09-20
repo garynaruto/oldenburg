@@ -23,8 +23,8 @@ public class SkyPath {
 	public int[] predecessor;
 	
 	public static void main(String[] args) {
-		int[] start ={2983};
-		int[] end ={3030};
+		int[] start ={2945};
+		int[] end ={3152};
 		SkyPath skyPath = new SkyPath();
 		skyPath.inputData(nodeFile,edgeFile);
 		skyPath.multipointSkyline(start, end);
