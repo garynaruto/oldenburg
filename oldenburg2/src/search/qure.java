@@ -14,8 +14,8 @@ import buildTree.Vertex;
 import buildTree.Tree.Node;
 
 public class qure {
-	public static final int start = 2945;
-	public static final int end = 3152;
+	public static final int start = 2945;//2945-3152
+	public static final int end = 3000;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 
@@ -44,10 +44,11 @@ public class qure {
 		// find all path
 		DFS d = new DFS(graphTree);
 		List<Node<Vertex>> allpath = d.dfs(starNode, endNode);
-		System.out.println("");		
-		/*for (int i = 0; i < allpath.size(); i++) {
-			System.out.println("" + allpath.get(i).vertex.vertexID);
-		}*/
+		System.out.println("");
+		/*
+		 * for (int i = 0; i < allpath.size(); i++) { System.out.println("" +
+		 * allpath.get(i).vertex.vertexID); }
+		 */
 		while (containSmallGraph(allpath)) {
 			System.out.println(">===================================<");
 			for (int i = 0; i < allpath.size(); i++) {
@@ -55,14 +56,17 @@ public class qure {
 				if (containSmallGraph(n)) {// if node has small graph
 					if (n.vertex.vertexID == starNode.vertex.vertexID) {
 						System.out.println(">>> " + n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans = findsmallpath(true, start, n, allpath.get(i + 1));
-						allpath.remove(0);
+						List<List<Node<Vertex>>> ans = findsmallpath(true, c, start, n, allpath.get(i + 1));
 						// one skyline
-						List<Node<Vertex>> l = ans.get(0);
-						allpath.addAll(0, l);
-						for (Node<Vertex> a2 : ans.get(0)) {
-							System.out.println("s=" + a2.vertex.vertexID);
+						if(ans.size()>0){
+							allpath.remove(0);
+							List<Node<Vertex>> l = ans.get(0);
+							allpath.addAll(0, l);
+							for (Node<Vertex> a2 : ans.get(0)) {
+								System.out.println("s=" + a2.vertex.vertexID);
+							}
 						}
+						
 						/*
 						 * all skyline for(int j=0;j<ans.size(); j++){
 						 * List<Node<Vertex>> l = ans.get(j); }
@@ -74,14 +78,16 @@ public class qure {
 
 					} else if (n.vertex.vertexID == endNode.vertex.vertexID) {
 						System.out.println("end " + n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans = findsmallpath(false, end, n, allpath.get(i - 1));
+						List<List<Node<Vertex>>> ans = findsmallpath(false, c, end, n, allpath.get(i - 1));
 
-						allpath.remove(allpath.size() - 1);
 						// one skyline
-						List<Node<Vertex>> l = ans.get(0);
-						allpath.addAll(allpath.size(), l);
-						for (Node<Vertex> a2 : ans.get(0)) {
-							System.out.println("s=" + a2.vertex.vertexID);
+						if(ans.size()>0){
+							allpath.remove(allpath.size() - 1);
+							List<Node<Vertex>> l = ans.get(0);
+							allpath.addAll(allpath.size(), l);
+							for (Node<Vertex> a2 : ans.get(0)) {
+								System.out.println("s=" + a2.vertex.vertexID);
+							}
 						}
 						/*
 						 * all skyline for(int j=0;j<ans.size(); j++){
@@ -97,24 +103,34 @@ public class qure {
 					} else {
 						System.out.println("   ." + n.vertex.vertexID);
 						List<List<Node<Vertex>>> ans = findsmallpath(n, allpath.get(i - 1), allpath.get(i + 1), c);
-						
-						allpath.remove(i);
-						List<Node<Vertex>> l = ans.get(0);
-						allpath.addAll(i, l);
-						for (Node<Vertex> a2 : ans.get(0)) {
-							// System.out.println("m=" + a2.vertex.vertexID);
+
+						if(ans.size() > 0){
+							allpath.remove(i);
+							List<Node<Vertex>> l = ans.get(0);
+							allpath.addAll(i, l);
+							for (Node<Vertex> a2 : ans.get(0)) {
+								System.out.println("m=" + a2.vertex.vertexID);
+							}
 						}
+						
+						
 					}
 				}
 
 			}
 			System.out.println("allpath.size(): " + allpath.size());
 			for (Node<Vertex> n : allpath) {
+				if(n.vertex.vertexID == start && !n.isChildren()){
+					starNode = n;
+				}else if(n.vertex.vertexID == end && !n.isChildren()){
+					endNode =n;
+				}
 				System.out.print("->" + n.vertex.vertexID);
 			}
 			System.out.println();
+			//Thread.sleep(1000);
 		}
-
+		
 		/*
 		 * int[] start ={2938}; int[] end ={3152}; SkyPath skyPath = new
 		 * SkyPath(); skyPath.inputData(edgeList, graphTree.root.children);
@@ -128,18 +144,20 @@ public class qure {
 		 */
 	}
 
-	public static List<List<Node<Vertex>>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn,Cluster c) {
+	public static List<List<Node<Vertex>>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn, Cluster c) {
 		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
-		System.out.println("findsmallpath2 :" + lastn.vertex.vertexID + " " + n.vertex.vertexID + " " + nextn.vertex.vertexID);
+		System.out.println( "findsmallpath2 :" + lastn.vertex.vertexID + " " + n.vertex.vertexID + " " + nextn.vertex.vertexID);
 		if (!n.isChildren()) {
 			LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
 			out.add(tmp);
 			System.out.println("Find no children");
 			return out;
 		} else if (n.children.size() == 1) {
+			System.out.println("only one children");
 			out.add(new LinkedList<Node<Vertex>>(n.children));
 			return out;
 		} else {
+			System.out.println("has children");
 			// find map edge node
 			int mapLastId = 0;
 			int mapNextId = 0;
@@ -162,7 +180,7 @@ public class qure {
 				}
 
 			}
-			// link node didn't found
+			// map node didn't found
 			if (findMapFlg1 == false || findMapFlg2 == false) {
 				if (findMapFlg1 == false) {
 					int last = c.findClusterId(lastn.vertex.vertexID);
@@ -179,6 +197,7 @@ public class qure {
 				}
 				if (findMapFlg2 == false) {
 					int Next = c.findClusterId(nextn.vertex.vertexID);
+					System.out.println("Next " + Next);
 					for (Edge e : n.edges) {
 						if (Next == e.v1) {
 							mapNextId = e.v2;
@@ -189,11 +208,14 @@ public class qure {
 						}
 					}
 				}
-
+				System.out.println("find Map node Flg false 2");
 				System.out.println(findMapFlg1 + " " + findMapFlg2);
 				System.out.println(mapLastId + " " + mapNextId);
-				System.out.println("find Map node Flg false 2");
 				// System.exit(1);
+			}
+			else{
+				System.out.println("find Map node done 2");
+				System.out.println(mapLastId + " " + mapNextId);
 			}
 			// find skyline
 			if (mapNextId == mapLastId) {
@@ -230,7 +252,7 @@ public class qure {
 				}
 				if (!foundflg) {
 					System.out.println("!foundflg");
-					System.exit(1);
+					//System.exit(1);
 				} else {
 
 				}
@@ -254,7 +276,7 @@ public class qure {
 		return out;
 	}
 
-	public static List<List<Node<Vertex>>> findsmallpath(boolean starflg, int objectID, Node<Vertex> n,Node<Vertex> linkedn) {
+	public static List<List<Node<Vertex>>> findsmallpath(boolean starflg, Cluster c, int objectID, Node<Vertex> n, Node<Vertex> linkedn) {
 		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
 		System.out.println("findsmallpath1 :" + n.vertex.vertexID + " " + linkedn.vertex.vertexID);
 
@@ -281,7 +303,21 @@ public class qure {
 			}
 			if (findMapFlg == false) {
 				System.out.println("find Map node Flg false 1");
-				System.exit(1);
+				int last = c.findClusterId(linkedn.vertex.vertexID);
+				for (Edge e : n.edges) {
+					if (last == e.v1) {
+						mapNodeid = e.v2;
+						findMapFlg = true;
+					} else if (last == e.v2) {
+						mapNodeid = e.v1;
+						findMapFlg = true;
+					}
+				}
+
+				System.out.println("findMapFlg " + findMapFlg);
+				System.out.println("mapLastId " + mapNodeid);
+				// System.exit(1);
+
 			} else {
 				System.out.println("mapNodeid = " + mapNodeid);
 			}
@@ -335,44 +371,80 @@ public class qure {
 							}
 						}
 					}
-					if(!containflg && mapNodeid == n.vertex.vertexID){
+					if (!containflg && mapNodeid == n.vertex.vertexID) {
 						System.out.println("!contain sky line");
-						LinkedList<Node<Vertex>> level1= new LinkedList<Node<Vertex>>();
+						LinkedList<Node<Vertex>> level1 = new LinkedList<Node<Vertex>>();
 						level1.add(findNodeByID(mapNodeid, n));
 						out.add(level1);
 					}
-					
+
 				}
 				// check and exchange order
 				if (starflg) {
 					for (int i = 0; i < out.size(); i++) {
 						List<Node<Vertex>> list = out.get(i);
-						if (list.get(0).vertex.vertexID == mapNodeid) {
+						if (list.get(0).vertex.vertexID != objectID && list.get(0).vertex.vertexID != n.vertex.vertexID) {
+							System.out.println("!star");
 							for (int j = 0; j < list.size() / 2; j++) {
 								Node<Vertex> temp = list.get(j);
 								list.set(j, list.get(list.size() - j - 1));
 								list.set(list.size() - j - 1, temp);
 							}
+						}else if(list.get(0).vertex.vertexID != objectID){
+							boolean ContainObject = false;
+							for(int j=0; j<list.size(); j++){
+								Node<Vertex> tmp= list.get(j);
+								if(tmp.vertex.vertexID == objectID){
+									ContainObject=true;
+								}
+							}
+							if(ContainObject){
+								System.out.println("!star ContainObject");
+								for (int j = 0; j < list.size() / 2; j++) {
+									Node<Vertex> temp = list.get(j);
+									list.set(j, list.get(list.size() - j - 1));
+									list.set(list.size() - j - 1, temp);
+								}
+							}
 						}
+						
 					}
 				} else {
 					for (int i = 0; i < out.size(); i++) {
 						List<Node<Vertex>> list = out.get(i);
-						if (list.get(list.size() - 1).vertex.vertexID == mapNodeid) {
+						if (list.get(list.size()-1).vertex.vertexID != objectID && list.get(list.size()-1).vertex.vertexID != n.vertex.vertexID) {
+							System.out.println("!end");
 							for (int j = 0; j < list.size() / 2; j++) {
 								Node<Vertex> temp = list.get(j);
 								list.set(j, list.get(list.size() - j - 1));
 								list.set(list.size() - j - 1, temp);
+							}
+						}else if(list.get(list.size()-1).vertex.vertexID != objectID){
+							boolean ContainObject = false;
+							for(int j=0; j<list.size(); j++){
+								Node<Vertex> tmp= list.get(j);
+								if(tmp.vertex.vertexID == objectID){
+									ContainObject=true;
+								}
+							}
+							if(ContainObject){
+								System.out.println("!star ContainObject");
+								for (int j = 0; j < list.size() / 2; j++) {
+									Node<Vertex> temp = list.get(j);
+									list.set(j, list.get(list.size() - j - 1));
+									list.set(list.size() - j - 1, temp);
+								}
 							}
 						}
 					}
 				}
 			}
 			return out;
-		
+
 		}
 	}
-	public static Node<Vertex> findNodeByID(int ID,Node<Vertex> n) {
+
+	public static Node<Vertex> findNodeByID(int ID, Node<Vertex> n) {
 		for (int i = 0; i < n.children.size(); i++) {
 			if (n.children.get(i).vertex.vertexID == ID) {
 				return n.children.get(i);
@@ -380,6 +452,7 @@ public class qure {
 		}
 		return null;
 	}
+
 	public static boolean containSmallGraph(List<Node<Vertex>> path) {
 		for (Node<Vertex> n : path) {
 			if (n.skyLinePath.size() > 0 || n.children.size() > 0 || n.edges.size() > 0) {

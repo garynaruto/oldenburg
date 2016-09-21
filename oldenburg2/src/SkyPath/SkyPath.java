@@ -24,7 +24,7 @@ public class SkyPath {
 	
 	public static void main(String[] args) {
 		int[] start ={2945};
-		int[] end ={3152};
+		int[] end ={3000};
 		SkyPath skyPath = new SkyPath();
 		skyPath.inputData(nodeFile,edgeFile);
 		skyPath.multipointSkyline(start, end);
