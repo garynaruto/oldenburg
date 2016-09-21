@@ -15,7 +15,7 @@ import buildTree.Tree.Node;
 
 public class qure {
 	public static final int start = 2945;//2945-3152
-	public static final int end = 3000;
+	public static final int end = 3152;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 

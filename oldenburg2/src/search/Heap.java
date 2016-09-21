@@ -1,9 +1,9 @@
-package buildTree;
+package search;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class Heap<AnyType extends Comparable<AnyType>> {
-	private static final int CAPACITY = 2;
+	private static final int CAPACITY = 100;
 
 	private int size; // Number of elements in heap
 	private AnyType[] heap; // The heap array
