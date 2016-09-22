@@ -1,10 +1,15 @@
 package search;
 import java.util.*;
-
+/* Heap<T extends Comparable<T>>
+ * method :
+ * deleteMin() 取出top
+ * buildHeap() 全部向下置換
+ * percolatingDown(int k) 從第K個向下置換
+ * 
+ * */
 @SuppressWarnings("unchecked")
 public class Heap<AnyType extends Comparable<AnyType>> {
 	private static final int CAPACITY = 100;
-
 	private int size; // Number of elements in heap
 	private AnyType[] heap; // The heap array
 
@@ -76,9 +81,9 @@ public class Heap<AnyType extends Comparable<AnyType>> {
 	/**
 	 * Deletes the top item
 	 */
-	public AnyType deleteMin() throws RuntimeException {
+	public AnyType deleteMin(){
 		if (size == 0)
-			throw new RuntimeException();
+			return null;
 		AnyType min = heap[1];
 		heap[1] = heap[size--];
 		percolatingDown(1);
@@ -116,19 +121,29 @@ public class Heap<AnyType extends Comparable<AnyType>> {
 	}
 
 	public static void main(String[] args) {
-		Heap<String> h = new Heap<String>();
-
-		h.insert("p");
-		h.insert("r");
-		h.insert("i");
-		h.insert("o");
-		System.out.println(h);
-		h.deleteMin();
-		System.out.println(h);
-
-		Heap<Integer> tmp = new Heap<Integer>();
+		
+	
+		
 		Integer[] a = { 4, 7, 7, 7, 5, 0, 2, 3, 5, 1 };
-		tmp.heapSort(a);
+		
+		Heap<Integer> tmp = new Heap<Integer>(a);
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
+		System.out.println(tmp.deleteMin());
 		System.out.println(Arrays.toString(a));
 	}
 }

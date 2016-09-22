@@ -1,24 +1,26 @@
-package search;
-
+package test;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import SkyPath.SkyNode;
-import SkyPath.SkyPath;
 import buildTree.Edge;
 import buildTree.Tree;
 import buildTree.Vertex;
 import buildTree.Tree.Node;
-
-public class qure {
+import search.Heap;
+import search.*;
+/*
+ * search.Query store
+ * 9/22 7:41
+ * : add sky line
+ * */
+public class query {
 	public static final int start = 2945;//2945-3152
-	public static final int end = 3000;
+	public static final int end = 3152;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
-
+	public static Edge[] edges;
 	public static void main(String args[]) throws Exception {
 		// Object deserialization 物件反序列化
 		/* graphTree */
@@ -26,42 +28,58 @@ public class qure {
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		graphTree = (Tree<Vertex>) ois.readObject();
 		ois.close();
+		fis.close();
+		
 		/* edgeList */
 		fis = new FileInputStream("./data/SerializationEdgeList");
 		ois = new ObjectInputStream(fis);
 		edgeList = (List<Edge>) ois.readObject();
 		ois.close();
 		fis.close();
+		
+		/*edges*/
+		fis = new FileInputStream("./data/SerializationEdgeArray");
+		ois = new ObjectInputStream(fis);
+		edges = (Edge[]) ois.readObject();
+		ois.close();
+		fis.close();
 		System.out.println("deserialization.");
-
+		
+		//heap & skyline path list
+		List<Skyline> list =new LinkedList<Skyline>();
+		Heap<Skyline> h = new Heap<Skyline>();
+		
 		// find belong level 1 node
 		Cluster c = new Cluster(graphTree);
 		int starIndex = c.findCluster(start);
 		Node<Vertex> starNode = graphTree.root.children.get(starIndex);
 		int endIndex = c.findCluster(end);
 		Node<Vertex> endNode = graphTree.root.children.get(endIndex);
-
+		
+		
 		// find all path
 		DFS d = new DFS(graphTree);
 		List<Node<Vertex>> allpath = d.dfs(starNode, endNode);
+		Skyline allpaths = new Skyline(allpath);
+		h.insert(allpaths);
 		System.out.println("");
 		/*
 		 * for (int i = 0; i < allpath.size(); i++) { System.out.println("" +
 		 * allpath.get(i).vertex.vertexID); }
 		 */
-		while (containSmallGraph(allpath)) {
+		while (containSmallGraph(allpaths)) {
 			System.out.println(">===================================<");
-			for (int i = 0; i < allpath.size(); i++) {
-				Node<Vertex> n = allpath.get(i);
+			for (int i = 0; i < allpaths.path.size(); i++) {
+				Node<Vertex> n = allpaths.path.get(i);
 				if (containSmallGraph(n)) {// if node has small graph
 					if (n.vertex.vertexID == starNode.vertex.vertexID) {
 						System.out.println(">>> " + n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans = findsmallpath(true, c, start, n, allpath.get(i + 1));
+						List<List<Node<Vertex>>> ans = findsmallpath(true, c, start, n, allpaths.path.get(i + 1));
 						// one skyline
 						if(ans.size()>0){
-							allpath.remove(0);
+							allpaths.path.remove(0);
 							List<Node<Vertex>> l = ans.get(0);
-							allpath.addAll(0, l);
+							allpaths.path.addAll(0, l);
 							for (Node<Vertex> a2 : ans.get(0)) {
 								System.out.println("s=" + a2.vertex.vertexID);
 							}
@@ -78,13 +96,13 @@ public class qure {
 
 					} else if (n.vertex.vertexID == endNode.vertex.vertexID) {
 						System.out.println("end " + n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans = findsmallpath(false, c, end, n, allpath.get(i - 1));
+						List<List<Node<Vertex>>> ans = findsmallpath(false, c, end, n, allpaths.path.get(i - 1));
 
 						// one skyline
 						if(ans.size()>0){
-							allpath.remove(allpath.size() - 1);
+							allpaths.path.remove(allpaths.path.size() - 1);
 							List<Node<Vertex>> l = ans.get(0);
-							allpath.addAll(allpath.size(), l);
+							allpaths.path.addAll(allpaths.path.size(), l);
 							for (Node<Vertex> a2 : ans.get(0)) {
 								System.out.println("s=" + a2.vertex.vertexID);
 							}
@@ -102,12 +120,12 @@ public class qure {
 						break;
 					} else {
 						System.out.println("   ." + n.vertex.vertexID);
-						List<List<Node<Vertex>>> ans = findsmallpath(n, allpath.get(i - 1), allpath.get(i + 1), c);
+						List<List<Node<Vertex>>> ans = findsmallpath(n, allpaths.path.get(i - 1), allpaths.path.get(i + 1), c);
 
 						if(ans.size() > 0){
-							allpath.remove(i);
+							allpaths.path.remove(i);
 							List<Node<Vertex>> l = ans.get(0);
-							allpath.addAll(i, l);
+							allpaths.path.addAll(i, l);
 							for (Node<Vertex> a2 : ans.get(0)) {
 								System.out.println("m=" + a2.vertex.vertexID);
 							}
@@ -118,8 +136,8 @@ public class qure {
 				}
 
 			}
-			System.out.println("allpath.size(): " + allpath.size());
-			for (Node<Vertex> n : allpath) {
+			System.out.println("allpath.size(): " + allpaths.path.size());
+			for (Node<Vertex> n : allpaths.path) {
 				if(n.vertex.vertexID == start && !n.isChildren()){
 					starNode = n;
 				}else if(n.vertex.vertexID == end && !n.isChildren()){
@@ -453,8 +471,8 @@ public class qure {
 		return null;
 	}
 
-	public static boolean containSmallGraph(List<Node<Vertex>> path) {
-		for (Node<Vertex> n : path) {
+	public static boolean containSmallGraph(Skyline s) {
+		for (Node<Vertex> n : s.path) {
 			if (n.skyLinePath.size() > 0 || n.children.size() > 0 || n.edges.size() > 0) {
 				return true;
 			}
@@ -478,5 +496,4 @@ public class qure {
 		}
 		return false;
 	}
-
 }

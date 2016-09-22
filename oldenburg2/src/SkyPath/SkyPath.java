@@ -24,7 +24,10 @@ public class SkyPath {
 	
 	public static void main(String[] args) {
 		int[] start ={2945};
-		int[] end ={3000};
+		int[] end ={3152};
+		//開始時間
+		long startTime = System.currentTimeMillis();
+		
 		SkyPath skyPath = new SkyPath();
 		skyPath.inputData(nodeFile,edgeFile);
 		skyPath.multipointSkyline(start, end);
@@ -37,6 +40,7 @@ public class SkyPath {
 				System.out.println((SkyNode)a);
 			}
 		}
+		
 	}
 	public void inputData(List<Edge> elist, List<Tree.Node<Vertex>> vlist) {
 		try {
