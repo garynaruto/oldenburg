@@ -1,4 +1,5 @@
 package SkyPath;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -21,77 +22,88 @@ public class SkyPath {
 	public double[][] min;
 	public PriorityQueue<Integer> queue = new PriorityQueue<Integer>();
 	public int[] predecessor;
-	
+
 	public static void main(String[] args) {
-		int[] start ={2945};
-		int[] end ={3152};
-		//開始時間
+		int[] start = { 2945 };
+		int[] end = { 3000 };
+		// 開始時間
 		long startTime = System.currentTimeMillis();
-		
+
 		SkyPath skyPath = new SkyPath();
-		skyPath.inputData(nodeFile,edgeFile);
+		skyPath.inputData(nodeFile, edgeFile);
 		skyPath.multipointSkyline(start, end);
-		//Object[] ans =skyPath.multipointSkypathSet.get(0);//裡面就是答案，每個Object[]就是一條路
+		// Object[] ans
+		// =skyPath.multipointSkypathSet.get(0);//裡面就是答案，每個Object[]就是一條路
 		int count = skyPath.multipointSkypathSet.size();
-		for(int i=0; i<count; i++){
-			Object[] ans =skyPath.multipointSkypathSet.get(i);
-			System.out.println("Path "+(i+1)+" ------>");
-			for(Object a : ans){
-				System.out.println((SkyNode)a);
+		for (int i = 0; i < count; i++) {
+			Object[] ans = skyPath.multipointSkypathSet.get(i);
+			System.out.println("Path " + (i + 1) + " ------>");
+			for (Object a : ans) {
+				System.out.println((SkyNode) a);
 			}
 		}
-		
+		// 結束時間
+		long endTime = System.currentTimeMillis();
+		// 執行時間
+		long totTime = startTime - System.currentTimeMillis();
+		totTime = endTime - startTime;
+		// 印出執行時間
+		System.out.println("Using Time:" + totTime);
 	}
+
 	public void inputData(List<Edge> elist, List<Tree.Node<Vertex>> vlist) {
 		try {
-			for(Tree.Node<Vertex> v : vlist){
+			for (Tree.Node<Vertex> v : vlist) {
 				nodes.add(new SkyNode(v.vertex.vertexID, v.vertex.x, v.vertex.y));
 			}
-			for(Edge e : elist){
+			for (Edge e : elist) {
 				SkyEdge temp = new SkyEdge(e.v1, e.v2);
-				for (int i = 0; i <Main2.dimasion; i++) {
+				for (int i = 0; i < Main2.dimasion; i++) {
 					temp.addCost(e.dimasion[i]);
 				}
 				edges.add(temp);
 				for (int i = 0; i < nodes.size(); i++) {
-					if (nodes.get(i).getNodeId()==e.v1) {
+					if (nodes.get(i).getNodeId() == e.v1) {
 						//
 						boolean findFlg = false;
-						for(Tree.Node<Vertex> v : vlist){
-							if(v.vertex.vertexID == e.v2){
+						for (Tree.Node<Vertex> v : vlist) {
+							if (v.vertex.vertexID == e.v2) {
 								findFlg = true;
 								break;
 							}
 						}
-						if(findFlg){
+						if (findFlg) {
 							nodes.get(i).addRelationNodeId(e.v2);
-							//System.out.println(nodes.get(i).nodeId+" add "+e.v2);
+							// System.out.println(nodes.get(i).nodeId+" add
+							// "+e.v2);
 						}
 					}
-					if (nodes.get(i).getNodeId()==e.v2) {
+					if (nodes.get(i).getNodeId() == e.v2) {
 						//
 						boolean findFlg = false;
-						for(Tree.Node<Vertex> v : vlist){
-							if(v.vertex.vertexID == e.v1){
+						for (Tree.Node<Vertex> v : vlist) {
+							if (v.vertex.vertexID == e.v1) {
 								findFlg = true;
 								break;
 							}
 						}
-						if(findFlg){
+						if (findFlg) {
 							nodes.get(i).addRelationNodeId(e.v1);
-							//System.out.println(nodes.get(i).nodeId+" add "+e.v1);
+							// System.out.println(nodes.get(i).nodeId+" add
+							// "+e.v1);
 						}
-							
+
 					}
 				}
 			}
 			min = new double[6200][edges.get(0).getCost().size()];
 			predecessor = new int[6200];
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public void inputData(String nodeFile,String edgeFile) {
+
+	public void inputData(String nodeFile, String edgeFile) {
 		try {
 			FileReader nodeFileReader = new FileReader(nodeFile);
 			BufferedReader nodeBufferReader = new BufferedReader(nodeFileReader);
@@ -101,35 +113,36 @@ public class SkyPath {
 			String edge = null;
 			while ((node = nodeBufferReader.readLine()) != null) {
 				String[] fields = node.split(" ");
-				nodes.add(new SkyNode(Integer.parseInt(fields[0]), Double.parseDouble(fields[1]), Double.parseDouble(fields[2])));
+				nodes.add(new SkyNode(Integer.parseInt(fields[0]), Double.parseDouble(fields[1]),
+						Double.parseDouble(fields[2])));
 			}
 			while ((edge = edgeBufferReader.readLine()) != null) {
 				String[] fields = edge.split(" ");
-				SkyEdge temp = new SkyEdge(Integer.parseInt(fields[1]),Integer.parseInt(fields[2]));
+				SkyEdge temp = new SkyEdge(Integer.parseInt(fields[1]), Integer.parseInt(fields[2]));
 				for (int i = 3; i < fields.length; i++) {
 					temp.addCost(Double.parseDouble(fields[i]));
 				}
 				edges.add(temp);
 				for (int i = 0; i < nodes.size(); i++) {
-					if (nodes.get(i).getNodeId()==Integer.parseInt(fields[1])) {
+					if (nodes.get(i).getNodeId() == Integer.parseInt(fields[1])) {
 						nodes.get(i).addRelationNodeId(Integer.parseInt(fields[2]));
 					}
-					if (nodes.get(i).getNodeId()==Integer.parseInt(fields[2])) {
+					if (nodes.get(i).getNodeId() == Integer.parseInt(fields[2])) {
 						nodes.get(i).addRelationNodeId(Integer.parseInt(fields[1]));
 					}
 				}
 			}
 			min = new double[6200][edges.get(0).getCost().size()];
 			predecessor = new int[6200];
-		} catch (FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			System.out.println("FileNot Found Exception");
 			e.printStackTrace();
-		} catch (IOException e){
+		} catch (IOException e) {
 			System.out.println("IO Exception");
 			e.printStackTrace();
 		}
 	}
-	
+
 	public SkyPath() {
 		nodes = new ArrayList<SkyNode>();
 		edges = new ArrayList<SkyEdge>();
@@ -195,8 +208,8 @@ public class SkyPath {
 				for (int j = 0; j < o1.length - 1; j++) {
 					for (int k = 0; k < edges.get(0).getCost().size(); k++) {
 						min[cNode.getNodeId()][k] = min[cNode.getNodeId()][k]
-								+ searchEdge(((SkyNode) (o1[j])).getNodeId(), ((SkyNode) (o1[j + 1])).getNodeId()).getCost()
-										.get(k);
+								+ searchEdge(((SkyNode) (o1[j])).getNodeId(), ((SkyNode) (o1[j + 1])).getNodeId())
+										.getCost().get(k);
 					}
 				}
 			} else {
@@ -206,8 +219,9 @@ public class SkyPath {
 				boolean o2DominateO1 = true;
 				for (int j = 0; j < o1.length - 1; j++) {
 					for (int k = 0; k < edges.get(0).getCost().size(); k++) {
-						cost[k] = cost[k] + searchEdge(((SkyNode) (o1[j])).getNodeId(), ((SkyNode) (o1[j + 1])).getNodeId())
-								.getCost().get(k);
+						cost[k] = cost[k]
+								+ searchEdge(((SkyNode) (o1[j])).getNodeId(), ((SkyNode) (o1[j + 1])).getNodeId())
+										.getCost().get(k);
 					}
 				}
 				for (int j = 0; j < edges.get(0).getCost().size(); j++) {
@@ -261,10 +275,9 @@ public class SkyPath {
 			return false;
 	}
 
-
 	public SkyNode searchNode(int nodeId) {
 		for (int i = 0; i < nodes.size(); i++) {
-			if (nodes.get(i).getNodeId()==nodeId) {
+			if (nodes.get(i).getNodeId() == nodeId) {
 				return nodes.get(i);
 			}
 		}
@@ -273,9 +286,8 @@ public class SkyPath {
 
 	public SkyEdge searchEdge(int startNodeId, int endNodeId) {
 		for (int i = 0; i < edges.size(); i++) {
-			if (edges.get(i).getStartNodeId()==startNodeId && edges.get(i).getEndNodeId()==endNodeId
-					|| edges.get(i).getStartNodeId()==endNodeId
-							&& edges.get(i).getEndNodeId()==startNodeId) {
+			if (edges.get(i).getStartNodeId() == startNodeId && edges.get(i).getEndNodeId() == endNodeId
+					|| edges.get(i).getStartNodeId() == endNodeId && edges.get(i).getEndNodeId() == startNodeId) {
 				return edges.get(i);
 			}
 		}
@@ -289,14 +301,14 @@ public class SkyPath {
 		boolean o2DominateO1 = true;
 		for (int i = 0; i < o1.length - 1; i++) {
 			for (int j = 0; j < edges.get(0).getCost().size(); j++) {
-				cost1[j] = cost1[j]
-						+ searchEdge(((SkyNode) (o1[i])).getNodeId(), ((SkyNode) (o1[i + 1])).getNodeId()).getCost().get(j);
+				cost1[j] = cost1[j] + searchEdge(((SkyNode) (o1[i])).getNodeId(), ((SkyNode) (o1[i + 1])).getNodeId())
+						.getCost().get(j);
 			}
 		}
 		for (int i = 0; i < o2.length - 1; i++) {
 			for (int j = 0; j < edges.get(0).getCost().size(); j++) {
-				cost2[j] = cost2[j]
-						+ searchEdge(((SkyNode) (o2[i])).getNodeId(), ((SkyNode) (o2[i + 1])).getNodeId()).getCost().get(j);
+				cost2[j] = cost2[j] + searchEdge(((SkyNode) (o2[i])).getNodeId(), ((SkyNode) (o2[i + 1])).getNodeId())
+						.getCost().get(j);
 			}
 		}
 		for (int i = 0; i < edges.get(0).getCost().size(); i++) {
@@ -359,7 +371,7 @@ public class SkyPath {
 			int temp;
 			ArrayList<Integer> relationNodesId = new ArrayList<Integer>();
 			temp = queue.poll();
-			if (temp==endNode.getNodeId()) {
+			if (temp == endNode.getNodeId()) {
 				int i = endNode.getNodeId();
 				while (i != -1) {
 					tempList.add(searchNode(i));
@@ -371,7 +383,7 @@ public class SkyPath {
 				pathSet.add(ansList.toArray(new SkyNode[ansList.size()]));
 				break;
 			}
-			if(searchNode(temp)==null){
+			if (searchNode(temp) == null) {
 				System.out.println("searchNode(temp)==null");
 				System.out.println(temp);
 			}

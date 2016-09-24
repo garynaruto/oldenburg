@@ -10,11 +10,20 @@ public class Skyline implements Comparable<Skyline> {
 	public List<Edge> edges;
 	public double dist = 0.0;
 	public double[] dimasion;
-
-	public Skyline(List<Node<Vertex>> sk) {
+	public Node<Vertex> starNode;
+	public Node<Vertex> endNode;
+	public int start;
+	public int end;
+	
+	
+	public Skyline(List<Node<Vertex>> sk, Node<Vertex> start, Node<Vertex> end,int s,int t) {
 		this.path = new LinkedList<Node<Vertex>>(sk);
 		this.edges = new LinkedList<Edge>();
 		this.dimasion = new double[Main2.dimasion];
+		this.starNode = start;
+		this.endNode = end;
+		this.start = s;
+		this.end = t;
 		this.mapEdge();
 		this.calculateDimasion();
 		this.calculateDist();
@@ -24,6 +33,10 @@ public class Skyline implements Comparable<Skyline> {
 		this.edges = new LinkedList<Edge>(s.edges);
 		this.dimasion = new double[Main2.dimasion];
 		this.dist = s.dist;
+		this.starNode = s.starNode;
+		this.endNode = s.endNode;
+		this.start = s.start;
+		this.end = s.end;
 		for(int i=0; i<dimasion.length; i++){
 			dimasion[i] = s.dimasion[i];
 		}

@@ -60,7 +60,7 @@ public class query {
 		// find all path
 		DFS d = new DFS(graphTree);
 		List<Node<Vertex>> allpath = d.dfs(starNode, endNode);
-		Skyline allpaths = new Skyline(allpath);
+		Skyline allpaths = new Skyline(allpath,starNode,endNode,start,end);
 		h.insert(allpaths);
 		System.out.println("");
 		/*
