@@ -13,7 +13,7 @@ import search.Skyline;
 
 public class Query {
 	public static final int start = 2945;// 2945-3152
-	public static final int end = 3000;
+	public static final int end = 425;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 	public static Edge[] edges;
@@ -62,17 +62,20 @@ public class Query {
 		h.insert(allpaths);
 		System.out.println("");*/
 		
-		//find all paths
+		/*find all paths*/
 		Skyline allpaths;
 		Graph g = new Graph(edgeList.toArray(new Edge[edgeList.size()]), graphTree);
 		AllPaths a = new AllPaths(g, graphTree, starNode.vertex.vertexID, endNode.vertex.vertexID);
 		List<List<Node<Vertex>>> AllPathans = a.treeNodeAns;
 		System.out.println("# AllPathans.size = " + AllPathans.size());
 		
-		//Skyline tmp = new Skyline(AllPathans.get(0),starNode,endNode,start,end );
-		//h.insert(tmp);
+		
 		/**/
 		for(List<Node<Vertex>> l : AllPathans){
+			for(Node<Vertex> n:l){
+				System.out.print(">" + n.vertex.vertexID);
+			}
+			System.out.println();
 			Skyline tmp = new Skyline(l,starNode,endNode,start,end);
 			h.insert(tmp);
 		}

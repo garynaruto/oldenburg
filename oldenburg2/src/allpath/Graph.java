@@ -60,7 +60,8 @@ public class Graph {
     // throw an IndexOutOfBoundsException unless {@code 0 <= v < V}
     private boolean validateVertex(int v) {
         if (v < 0 || v >= V){
-        	return true;
+        	//System.out.println("cut Edge"+v);
+    		return true;
         }
         return false;
     }
@@ -73,8 +74,8 @@ public class Graph {
      * @throws IndexOutOfBoundsException unless both {@code 0 <= v < V} and {@code 0 <= w < V}
      */
     public void addEdge(int v, int w) {
-    	if( validateVertex(v) && validateVertex(w) ){
-    		System.out.println("cut Edge"+v+"-"+w);
+    	if( validateVertex(v) || validateVertex(w) ){
+    		//System.out.println("cut Edge"+v+"-"+w);
     		return;
     	}
     	E++;

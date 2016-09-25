@@ -10,16 +10,16 @@ import SkyPath.SkyNode;
 import SkyPath.SkyPath;
 
 public class Main2 {
-	public static final int node = 100;// OL.cnode100.txt  1000
-	public static final int edge = 107;// OL.cedge100.txt 1152
+	public static final int node = 1000;// OL.cnode100.txt  1000
+	public static final int edge = 1152;// OL.cedge100.txt 1152
 	public static final int dimasion = 2;
 	// public static final String nodeFile = "./data/small/3.txt";
 	// public static final String edgeFile = "./data/small/4.txt";
-	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode100.txt";
-	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge100.txt";
+	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode1000.txt";
+	public static final String edgeFile = "./data/Oldenburg/Oldenburg_cedge1000.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
 	public static final String writeTreeFile = "./data/OL." + node + "tree.txt";
-	public static int rangeNum = 10;// level range
+	public static int rangeNum = 50;// level range
 	public static int[] range;
 
 	public static void main(String[] args) {
@@ -354,7 +354,16 @@ public class Main2 {
 		System.out.println(">tree============================");
 		graphTree.root.printTree(0);
 		writeTreeFile(edgeList, graphTree);
-
+		
+		for(int i=0;i<edgeList.size(); i++){
+			Edge e = edgeList.get(i);
+			if(!isContainsTreeNodeByID(e.v1,graphTree.root.children) || !isContainsTreeNodeByID(e.v2,graphTree.root.children) ){
+				System.out.println(e.v1+" "+e.v2);
+				//edgeList.remove(e);
+			}
+		}
+		
+		
 		// Object serialization 物件序列化
 		try {
 			System.out.println("物件1: graphTree");
