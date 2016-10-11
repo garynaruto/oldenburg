@@ -47,7 +47,6 @@ public class Query {
 		Heap<Skyline> h = new Heap<Skyline>();
 		
 		
-		
 		// find belong level 1 node
 		Cluster c = new Cluster(graphTree);
 		int starIndex = c.findCluster(start);
