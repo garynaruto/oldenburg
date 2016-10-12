@@ -576,6 +576,7 @@ public class Main2 {
 			File file = new File(edgeFile);
 			Scanner s = new Scanner(file);
 			for (int i = 0; i < edge; i++) {
+				distance = 0.0;
 				edgeID = s.nextInt();
 				a = s.nextInt();
 				b = s.nextInt();

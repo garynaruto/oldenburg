@@ -1,11 +1,15 @@
 package search;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import buildTree.*;
 import buildTree.Tree.Node;
 
 public class Skyline implements Comparable<Skyline> {
 	public static Edge[] edgeArray;
+	public static Map<String, Edge> edgeMap;
 	public List<Node<Vertex>> path;
 	public List<Edge> edges;
 	public double dist = 0.0;
@@ -14,8 +18,16 @@ public class Skyline implements Comparable<Skyline> {
 	public Node<Vertex> endNode;
 	public int start;
 	public int end;
-	
-	
+	public int from = 0;
+	public static void setMap(Edge[] e){
+		edgeArray = e;
+		edgeMap = new HashMap<>(e.length);
+		for(int i=0; i<e.length; i++){
+			edgeMap.put(e[i].v1+" "+e[i].v2, e[i]);
+			edgeMap.put(e[i].v2+" "+e[i].v1, e[i]);
+		}
+		
+	}
 	public Skyline(List<Node<Vertex>> sk, Node<Vertex> start, Node<Vertex> end,int s,int t) {
 		this.path = new LinkedList<Node<Vertex>>(sk);
 		this.edges = new LinkedList<Edge>();
@@ -41,10 +53,8 @@ public class Skyline implements Comparable<Skyline> {
 			dimasion[i] = s.dimasion[i];
 		}
 	}
-	
-	
 	public void mapEdge() {
-		for(int i=0; i<path.size()-1; i++){
+		/*for(int i=0; i<path.size()-1; i++){
 			Node<Vertex> n = path.get(i);
 			Node<Vertex> n2 = path.get(i+1);
 			for(Edge e :edgeArray){
@@ -53,6 +63,14 @@ public class Skyline implements Comparable<Skyline> {
 				}else if(e.v1 == n2.vertex.vertexID && e.v2 == n.vertex.vertexID && !edges.contains(e)){
 					edges.add(e);
 				}
+			}
+		}*/
+		for(int i=0; i<path.size()-1; i++){
+			Node<Vertex> n = path.get(i);
+			Node<Vertex> n2 = path.get(i+1);
+			Edge e = edgeMap.get(n.vertex.vertexID+" "+n2.vertex.vertexID);
+			if(e != null){
+				edges.add(e);
 			}
 		}
 		
@@ -93,9 +111,7 @@ public class Skyline implements Comparable<Skyline> {
 		}
 		return;
 	}
-
 	public boolean isDominateByOther(Skyline o) {
-
 		if (this.dist <= o.dist) {
 			return false;
 		}
@@ -106,5 +122,4 @@ public class Skyline implements Comparable<Skyline> {
 		}
 		return true;
 	}
-
 }

@@ -18,36 +18,43 @@ public class Query {
 	public static List<Edge> edgeList;
 	public static Edge[] edges;
 
+	@SuppressWarnings("unchecked")
 	public static void main(String args[]) throws Exception {
 		// Object deserialization 物件反序列化
-		/* graphTree */
-		FileInputStream fis = new FileInputStream("./data/SerializationGraphTree");
-		ObjectInputStream ois = new ObjectInputStream(fis);
-		graphTree = (Tree<Vertex>) ois.readObject();
-		ois.close();
-		fis.close();
-		/* edgeList */
-		fis = new FileInputStream("./data/SerializationEdgeList");
-		ois = new ObjectInputStream(fis);
-		edgeList = (List<Edge>) ois.readObject();
-		ois.close();
-		fis.close();
-		/* edges */
-		fis = new FileInputStream("./data/SerializationEdgeArray");
-		ois = new ObjectInputStream(fis);
-		edges = (Edge[]) ois.readObject();
-		ois.close();
-		fis.close();
+		try{
+			/* graphTree */
+			FileInputStream fis = new FileInputStream("./data/SerializationGraphTree");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			graphTree = (Tree<Vertex>) ois.readObject();
+			ois.close();
+			fis.close();
+			/* edgeList */
+			fis = new FileInputStream("./data/SerializationEdgeList");
+			ois = new ObjectInputStream(fis);
+			edgeList = (List<Edge>) ois.readObject();
+			ois.close();
+			fis.close();
+			/* edges */
+			fis = new FileInputStream("./data/SerializationEdgeArray");
+			ois = new ObjectInputStream(fis);
+			edges = (Edge[]) ois.readObject();
+			ois.close();
+			fis.close();
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println("deserialization Exception");
+			System.exit(1);
+		}
 		System.out.println("deserialization.");
 		long startTime = System.currentTimeMillis();
 		
 		// heap & skyline path list
-		Skyline.edgeArray = edges;
+		Skyline.setMap(edges);
 		List<Skyline> list = new LinkedList<Skyline>();
 		Heap<Skyline> h = new Heap<Skyline>();
 		
 		
-		// find belong level 1 node
+		// find belong level1 node
 		Cluster c = new Cluster(graphTree);
 		int starIndex = c.findCluster(start);
 		Node<Vertex> starNode = graphTree.root.children.get(starIndex);
@@ -61,24 +68,42 @@ public class Query {
 		h.insert(allpaths);
 		System.out.println("");*/
 		
-		/*find all paths*/
-		Skyline allpaths;
-		Graph g = new Graph(edgeList.toArray(new Edge[edgeList.size()]), graphTree);
-		AllPaths a = new AllPaths(g, graphTree, starNode.vertex.vertexID, endNode.vertex.vertexID);
-		List<List<Node<Vertex>>> AllPathans = a.treeNodeAns;
-		System.out.println("# AllPathans.size = " + AllPathans.size());
-		
-		
-		/**/
+		//all path answer
+		List<List<Node<Vertex>>> AllPathans = null;
+		if(starIndex == endIndex){
+			/*expansion a node*/
+			System.out.println("expansion Exception");
+			System.exit(1);
+		}else{
+			/*find all paths*/
+			Graph g = new Graph(edgeList.toArray(new Edge[edgeList.size()]), graphTree);
+			AllPaths a = new AllPaths(g, graphTree, starNode.vertex.vertexID, endNode.vertex.vertexID);
+			AllPathans = a.treeNodeAns;
+			System.out.println("# AllPathans.size = " + AllPathans.size());
+		}
+		/* add all paths 
+		int from = 1;
 		for(List<Node<Vertex>> l : AllPathans){
 			for(Node<Vertex> n:l){
 				System.out.print(">" + n.vertex.vertexID);
 			}
 			System.out.println();
 			Skyline tmp = new Skyline(l,starNode,endNode,start,end);
+			tmp.from = from++;
 			h.insert(tmp);
+		}*/
+		/**/
+		List<Node<Vertex>> tmmp = AllPathans.get(11);
+		for(Node<Vertex> n: tmmp){
+			System.out.print(">" + n.vertex.vertexID);
 		}
+		System.out.println();
+		Skyline tmp = new Skyline( tmmp,starNode,endNode,start,end);
+		h.insert(tmp);
 		
+		
+		
+		Skyline allpaths = null;
 		// expansion loop 
 		while ((allpaths = h.deleteMin()) != null) {
 			boolean Dominate = false;
@@ -88,7 +113,7 @@ public class Query {
 				}
 			}
 			if(Dominate == true){
-				System.out.println("delete ...");
+				//System.out.println("delete ...");
 				continue;
 			}
 			boolean containSmallGraFlg=false;
@@ -99,18 +124,16 @@ public class Query {
 					if (n.vertex.vertexID == allpaths.starNode.vertex.vertexID) {
 						//System.out.println(">>> " + n.vertex.vertexID);
 						List<List<Node<Vertex>>> ans = findsmallpath(true, c,  allpaths.start, n, allpaths.path.get(i + 1));
-						// one skyline
 						if(ans.size()>1){
 							for (int j = 0; j < ans.size(); j++) {
 								Skyline otherpaths = new Skyline(allpaths);
 								otherpaths.expansion(false, i, ans.get(j));
 								h.insert(otherpaths);
-								System.out.println("add. new path 1");
 							}
 						}else if(ans.size() == 1) {
 							allpaths.expansion(false, i, ans.get(0));
 						}
-						
+						//System.out.println("add. new path 1");
 					} else if (n.vertex.vertexID == allpaths.endNode.vertex.vertexID) {
 						//System.out.println("end " + n.vertex.vertexID);
 						List<List<Node<Vertex>>> ans = findsmallpath(false, c,  allpaths.end, n, allpaths.path.get(i - 1));
@@ -120,12 +143,11 @@ public class Query {
 								Skyline otherpaths = new Skyline(allpaths);
 								otherpaths.expansion(true, i, l);
 								h.insert(otherpaths);
-								System.out.println("add. new path 2");
 							}
 						}else if(ans.size() == 1) {
 							allpaths.expansion(true, i, ans.get(0));
 						}
-						
+						//System.out.println("add. new path 2");
 						break;
 					} else {
 						//System.out.println("   ." + n.vertex.vertexID);
@@ -136,12 +158,11 @@ public class Query {
 								Skyline otherpaths = new Skyline(allpaths);
 								otherpaths.expansion(false, i, l);
 								h.insert(otherpaths);
-								System.out.println("add. new path 3");
 							}
 						}else if(ans.size() == 1) {
 							allpaths.expansion(false, i,  ans.get(0));
 						}
-						
+						//System.out.println("add. new path 3");
 
 					}
 				}
@@ -156,14 +177,6 @@ public class Query {
 			}
 			if(containSmallGraFlg){
 				h.insert(allpaths);
-				
-				
-				/*System.out.println(">===================================<");
-				System.out.println("allpath.size(): " + allpaths.path.size());
-				for (Node<Vertex> n : allpaths.path) {
-					System.out.print("->" + n.vertex.vertexID);
-				}
-				System.out.println();*/
 			}
 			else{
 				System.out.println("Sky line : ");
@@ -175,7 +188,7 @@ public class Query {
 				list.add(allpaths);
 			}
 			
-			Thread.sleep(100);
+			//Thread.sleep(100);
 		}
 		System.out.println();
 		//結束時間
@@ -183,6 +196,17 @@ public class Query {
 		//執行時間
 		long totTime = startTime - System.currentTimeMillis();
 		totTime = endTime - startTime;
+		
+		for(Skyline s :list){
+			System.out.println("Sky line : "+ s.path.size());
+			for (Node<Vertex> n : s.path) {
+				System.out.print("->" + n.vertex.vertexID);
+			}
+			System.out.println();
+			System.out.println("from : "+s.from);
+			System.out.println(String.format("dist :%.2f  [%.2f] [%.2f]", s.dist, s.dimasion[0], s.dimasion[1]));
+		}
+		
 		//印出執行時間
 		System.out.println("Using Time:" + totTime);
 	}

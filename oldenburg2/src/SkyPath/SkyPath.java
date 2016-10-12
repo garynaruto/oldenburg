@@ -25,12 +25,12 @@ public class SkyPath {
 
 	public static void main(String[] args) {
 		int[] start = { 2945 };
-		int[] end = { 3000 };
-		// 開始時間
-		long startTime = System.currentTimeMillis();
-
+		int[] end = { 425 };
+		
 		SkyPath skyPath = new SkyPath();
 		skyPath.inputData(nodeFile, edgeFile);
+		long startTime = System.currentTimeMillis();
+
 		skyPath.multipointSkyline(start, end);
 		// Object[] ans
 		// =skyPath.multipointSkypathSet.get(0);//裡面就是答案，每個Object[]就是一條路
@@ -39,8 +39,9 @@ public class SkyPath {
 			Object[] ans = skyPath.multipointSkypathSet.get(i);
 			System.out.println("Path " + (i + 1) + " ------>");
 			for (Object a : ans) {
-				System.out.println((SkyNode) a);
+				System.out.print((SkyNode)a + "->");
 			}
+			System.out.println();
 		}
 		// 結束時間
 		long endTime = System.currentTimeMillis();
