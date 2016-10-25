@@ -41,6 +41,7 @@ public class Graph {
     			return i;
     		}
     	}
+    	//bug
     	System.out.println(VertexID+" to -1");
     	return -1;
     }
