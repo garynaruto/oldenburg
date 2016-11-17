@@ -12,7 +12,7 @@ import SkyPath.SkyPath;
 public class Main2 {
 	public static final int node = 1000;// OL.cnode100.txt  1000
 	public static final int edge = 1152;// OL.cedge100.txt 1152
-	public static final int dimasion = 2;
+	public static final int dimasion = 1;
 	// public static final String nodeFile = "./data/small/3.txt";
 	// public static final String edgeFile = "./data/small/4.txt";
 	public static final String nodeFile = "./data/Oldenburg/Oldenburg_cnode1000.txt";

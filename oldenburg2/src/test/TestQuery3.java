@@ -11,7 +11,7 @@ import buildTree.Vertex;
 import buildTree.Tree.Node;
 import search.*;
 import allpath.*;
-
+//new Q
 public class TestQuery3 {
 	public static final int start = 2945;// 2945-3152
 	public static final int end = 425;
@@ -54,35 +54,51 @@ public class TestQuery3 {
 		List<Skyline> list = new LinkedList<Skyline>();
 		Heap<Skyline> h = new Heap<Skyline>();
 		
-		
 		// find belong level1 node
 		Cluster c = new Cluster(graphTree);
-		int starIndex = c.findCluster(start);
-		Node<Vertex> starNode = graphTree.root.children.get(starIndex);
-		int endIndex = c.findCluster(end);
-		Node<Vertex> endNode = graphTree.root.children.get(endIndex);
+		int starIndex = c.findClusterId(start);
 		
-		/* find a path
-		DFS d = new DFS(graphTree);
-		List<Node<Vertex>> allpath = d.dfs(starNode, endNode);
-		Skyline allpaths = new Skyline(allpath,start,end);
-		h.insert(allpaths);
-		System.out.println("");
-		*/
+		Node<Vertex> starNode = graphTree.root.children.get(c.findCluster(starIndex));
+		int endIndex = c.findClusterId(end);
+		Node<Vertex> endNode  = graphTree.root.children.get(c.findCluster(endIndex));
+		System.out.println("starIndex "+starIndex);
+		System.out.println("endIndex " + endIndex);
+		for(Node<Vertex>  i :graphTree.root.children){
+			System.out.println(i.vertex.vertexID);
+		}
+		
+		
 		//all path answer
-		List<List<Node<Vertex>>> AllPathans = null;
+		List<List<Node<Vertex>>> AllPathans = new LinkedList<List<Node<Vertex>>>();
 		if(starIndex == endIndex){
 			/*expansion a node*/
 			System.out.println("expansion Exception");
 			System.exit(1);
 		}else{
 			/*find all paths*/
-			allpath.Graph g = new  allpath.Graph(edgeList.toArray(new Edge[edgeList.size()]), graphTree);
-			AllPaths a = new AllPaths(g, graphTree, starNode.vertex.vertexID, endNode.vertex.vertexID);
-			AllPathans = a.treeNodeAns;
+			for(int i=0; i<graphTree.root.skyLinePath.size(); i++){
+				Node<Vertex>[] skyArray = graphTree.root.skyLinePath.get(i);
+				if (skyArray[0].vertex.vertexID == starIndex) {
+					if (skyArray[skyArray.length - 1].vertex.vertexID == endIndex) {
+						LinkedList<Node<Vertex>> outArray = new LinkedList<Node<Vertex>>(Arrays.asList(skyArray));
+						AllPathans.add(outArray);
+					}
+				} else if (skyArray[skyArray.length - 1].vertex.vertexID == starIndex) {
+					if (skyArray[0].vertex.vertexID == endIndex) {
+						LinkedList<Node<Vertex>> outArray = new LinkedList<Node<Vertex>>(Arrays.asList(skyArray));
+						for(int j=0; j<outArray.size() / 2; j++){
+							Node<Vertex> temp = outArray.get(j);
+							outArray.set(j, outArray.get(outArray.size() - j - 1));
+							outArray.set(outArray.size() - j - 1, temp);
+						}
+						
+						AllPathans.add(outArray);
+					}
+				}
+			}
 			System.out.println("# AllPathans.size = " + AllPathans.size());
 		}
-		/* add all paths
+		/* add all paths*/
 		int from = 1;
 		for(List<Node<Vertex>> l : AllPathans){
 			for(Node<Vertex> n:l){
@@ -92,21 +108,23 @@ public class TestQuery3 {
 			Skyline tmp = new Skyline(l,starNode,endNode,start,end);
 			tmp.from = from++;
 			h.insert(tmp);
-		} */
-		/*add a paths */
+		} 
+		/*add a paths
 		List<Node<Vertex>> tmmp = AllPathans.get(11);
 		for(Node<Vertex> n: tmmp){
 			System.out.print(">" + n.vertex.vertexID);
 		}
 		System.out.println();
 		Skyline tmp = new Skyline( tmmp,starNode,endNode,start,end);
-		h.insert(tmp);
-		
-		
+		h.insert(tmp); */
 		
 		Skyline allpaths = null;
 		// expansion loop 
 		while ((allpaths = h.deleteMin()) != null) {
+			for(Node<Vertex> n:allpaths.path){
+				System.out.print(">" + n.vertex.vertexID);
+			}
+			System.out.println();
 			boolean Dominate = false;
 			for( Skyline s : list ){
 				if(allpaths.isDominateByOther(s)){
@@ -204,15 +222,18 @@ public class TestQuery3 {
 		for(Skyline s :list){
 			System.out.println("Sky line : "+ s.path.size());
 			for (Node<Vertex> n : s.path) {
-				System.out.print("->" + n.vertex.vertexID);
+				System.out.print(" " + n.vertex.vertexID);
 			}
 			System.out.println();
 			System.out.println("from : "+s.from);
-			System.out.println(String.format("dist :%.2f  [%.2f] [%.2f]", s.dist, s.dimasion[0], s.dimasion[1]));
+			//System.out.println(String.format("dist :%.2f  [%.2f] [%.2f]", s.dist, s.dimasion[0], s.dimasion[1]));
 		}
-		
 		//印出執行時間
 		System.out.println("Using Time:" + totTime);
+		checkRoad(edges, list);
+		
+		
+		
 	}
 	
 	//find the small path in intermediate Node
@@ -577,7 +598,31 @@ public class TestQuery3 {
 		}
 		return false;
 	}
-
+	public static boolean checkRoad(Edge[] edges, List<Skyline> list) {
+		for (Skyline s : list) {
+			for(int i=0; i < s.path.size()-1; i++){
+				Node<Vertex> n = s.path.get(i);
+				Node<Vertex> n2 = s.path.get(i+1);
+				boolean foundFlg = false;
+				for(Edge e : edges){
+					if(e.v1 == n.vertex.vertexID && e.v2 == n2.vertex.vertexID){
+						foundFlg = true;
+						break;
+					}else if(e.v1 == n2.vertex.vertexID && e.v2 == n.vertex.vertexID){
+						foundFlg = true;
+						break;
+					}
+				}
+				if(!foundFlg){
+					System.out.println("CHECK ERROR");
+					System.out.println(n.vertex.vertexID);
+					System.out.println(n2.vertex.vertexID);
+				}
+			}
+		}
+		System.out.println("CHECK OK");
+		return true;
+	}
 	public static boolean isLevel1(int vid) {
 		for (int i = 0; i < graphTree.root.children.size(); i++) {
 			Tree.Node<Vertex> n = graphTree.root.children.get(i);

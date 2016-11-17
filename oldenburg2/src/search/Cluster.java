@@ -49,6 +49,7 @@ public class Cluster {
 		}
 		return -1;
 	}
+	
 	public int findClusterId(int objectID) {
 		
 		for (int i = 0; i < graphTree.root.children.size(); i++) {

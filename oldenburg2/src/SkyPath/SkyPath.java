@@ -9,11 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
+
+import RandLevel.Main2;
 import buildTree.*;
 
 public class SkyPath {
-	public static final String nodeFile = Main2.nodeFile;
-	public static final String edgeFile = Main2.edgeFile;
+	public static final String nodeFile = "./data/Oldenburg/OL.cnode.txt";
+	public static final String edgeFile = "./data/Oldenburg/OL.cedge.txt";
 	public ArrayList<SkyNode> nodes = new ArrayList<SkyNode>();
 	public ArrayList<SkyEdge> edges = new ArrayList<SkyEdge>();
 	public Stack<SkyNode> stack = new Stack<SkyNode>();
@@ -98,6 +100,8 @@ public class SkyPath {
 				}
 			}
 			min = new double[6200][edges.get(0).getCost().size()];
+			//min = new double[6200][buildTree.Main2.dimasion];
+			
 			predecessor = new int[6200];
 		} catch (Exception e) {
 			e.printStackTrace();
