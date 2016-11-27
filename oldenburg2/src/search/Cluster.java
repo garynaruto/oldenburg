@@ -8,9 +8,9 @@ import buildTree.Vertex;
 import buildTree.Tree.Node;
 
 public class Cluster {
-	List<List<Vertex>> l;
-	List<Node<Vertex>> t;
-	Tree<Vertex> graphTree;
+	private List<List<Vertex>> l;
+	private List<Node<Vertex>> t;
+	private Tree<Vertex> graphTree;
 
 	public Cluster(Tree<Vertex> graphTree) {
 		this.graphTree = graphTree;

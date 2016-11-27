@@ -161,7 +161,7 @@ class Graph {
 	/** Runs dijkstra using a specified source vertex */
 	public void dijkstra(int startName) {
 		if (!graph.containsKey(startName)) {
-			System.err.printf("Graph doesn't contain start vertex \"%s\"\n", startName);
+			System.err.printf("Graph doesn't contain start vertex \"%d\"\n", startName);
 			return;
 		}
 		final Vertex source = graph.get(startName);
@@ -184,7 +184,7 @@ class Graph {
 
 			u = q.pollFirst(); // vertex with shortest distance (first iteration
 								// will return source)
-			if (u.dist == Integer.MAX_VALUE)
+			if (u.dist == Double.MAX_VALUE)
 				break; // we can ignore u (and any other remaining vertices)
 						// since they are unreachable
 

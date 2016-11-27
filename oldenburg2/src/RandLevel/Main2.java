@@ -11,9 +11,11 @@ import SkyPath.SkyPath;
 public class Main2 {
 	public static final int node = 6105;// OL.cnode100.txt  1000
 	public static final int edge = 7035;// OL.cedge100.txt 1152
-	public static final int dimasion = 1;
-	public static final String nodeFile =  "./data/Oldenburg/OL.rand_cnode.txt";
-	public static final String edgeFile = "./data/Oldenburg/OL.cedge.txt";
+	public static final int dimasion = 2;
+	//public static final String nodeFile =  "./data/Oldenburg/OL.rand_cnode.txt";
+	//public static final String edgeFile = "./data/Oldenburg/OL.cedge.txt";
+	public static final String nodeFile =  "./data/Oldenburg/6Dimension_VertexCluster"+dimasion+".txt";
+	public static final String edgeFile = "./data/Oldenburg/OL_cedge_"+dimasion+"Dimension.txt";
 	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
 	public static final String writeTreeFile = "./data/OL." + node + "tree.txt";
 	public static int rangeNum = 100;// level range
@@ -21,10 +23,11 @@ public class Main2 {
 
 	public static void main(String[] args) {
 		// read node and edge
+		Edge.setDimasion(dimasion);
 		Edge[] edges = readSkyEdge();
 		Vertex[] vertexs = readSkyVertex();
 		System.out.println(edges.length + "\n" + vertexs.length);
-
+		
 		for (Edge e : edges) {
 			if (e == null)
 				System.out.println("e==null");

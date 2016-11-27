@@ -57,16 +57,14 @@ public class TestQuery3 {
 		// find belong level1 node
 		Cluster c = new Cluster(graphTree);
 		int starIndex = c.findClusterId(start);
-		
+		System.out.println("C>>>"+c.findClusterId(2926));
+		System.out.println("C>>>"+c.findClusterId(2926));
 		Node<Vertex> starNode = graphTree.root.children.get(c.findCluster(starIndex));
 		int endIndex = c.findClusterId(end);
 		Node<Vertex> endNode  = graphTree.root.children.get(c.findCluster(endIndex));
 		System.out.println("starIndex "+starIndex);
 		System.out.println("endIndex " + endIndex);
-		for(Node<Vertex>  i :graphTree.root.children){
-			System.out.println(i.vertex.vertexID);
-		}
-		
+		c.print();
 		
 		//all path answer
 		List<List<Node<Vertex>>> AllPathans = new LinkedList<List<Node<Vertex>>>();
@@ -101,10 +99,6 @@ public class TestQuery3 {
 		/* add all paths*/
 		int from = 1;
 		for(List<Node<Vertex>> l : AllPathans){
-			for(Node<Vertex> n:l){
-				System.out.print(">" + n.vertex.vertexID);
-			}
-			System.out.println();
 			Skyline tmp = new Skyline(l,starNode,endNode,start,end);
 			tmp.from = from++;
 			h.insert(tmp);
@@ -121,6 +115,7 @@ public class TestQuery3 {
 		Skyline allpaths = null;
 		// expansion loop 
 		while ((allpaths = h.deleteMin()) != null) {
+			System.out.println();
 			for(Node<Vertex> n:allpaths.path){
 				System.out.print(">" + n.vertex.vertexID);
 			}
@@ -132,7 +127,7 @@ public class TestQuery3 {
 				}
 			}
 			if(Dominate == true){
-				//System.out.println("delete ...");
+				System.out.println("delete ...");
 				continue;
 			}
 			boolean containSmallGraFlg=false;
@@ -142,7 +137,7 @@ public class TestQuery3 {
 					containSmallGraFlg=true;
 					//case 1 : star Node
 					if (n.vertex.vertexID == allpaths.starNode.vertex.vertexID) {
-						//System.out.println(">>> " + n.vertex.vertexID);
+						System.out.println("star " + n.vertex.vertexID);
 						List<List<Node<Vertex>>> ans = findsmallpath(true, c,  allpaths.start, n, allpaths.path.get(i + 1));
 						if(ans.size()>1){
 							for (int j = 0; j < ans.size(); j++) {
@@ -152,11 +147,12 @@ public class TestQuery3 {
 							}
 						}else if(ans.size() == 1) {
 							allpaths.expansion(false, i, ans.get(0));
+							i+=ans.get(0).size()-1;
 						}
 						//System.out.println("add. new path 1");
 					//case 2 : end Node
 					} else if (n.vertex.vertexID == allpaths.endNode.vertex.vertexID) {
-						//System.out.println("end " + n.vertex.vertexID);
+						System.out.println("end " + n.vertex.vertexID);
 						List<List<Node<Vertex>>> ans = findsmallpath(false, c,  allpaths.end, n, allpaths.path.get(i - 1));
 						if(ans.size() > 1){
 							for (int j = 0; j < ans.size(); j++) {
@@ -167,12 +163,13 @@ public class TestQuery3 {
 							}
 						}else if(ans.size() == 1) {
 							allpaths.expansion(true, i, ans.get(0));
+							i+=ans.get(0).size()-1;
 						}
 						//System.out.println("add. new path 2");
 						break;
 					//case 3 : intermediate Node
 					} else {
-						//System.out.println("   ." + n.vertex.vertexID);
+						System.out.println(".in " + n.vertex.vertexID);
 						List<List<Node<Vertex>>> ans = findsmallpath(n, allpaths.path.get(i - 1), allpaths.path.get(i + 1), c);
 						if(ans.size() > 1){
 							for (int j = 0; j < ans.size(); j++) {
@@ -183,6 +180,7 @@ public class TestQuery3 {
 							}
 						}else if(ans.size() == 1) {
 							allpaths.expansion(false, i,  ans.get(0));
+							i+=ans.get(0).size()-1;
 						}
 						//System.out.println("add. new path 3");
 
@@ -239,18 +237,20 @@ public class TestQuery3 {
 	//find the small path in intermediate Node
 	public static List<List<Node<Vertex>>> findsmallpath(Node<Vertex> n, Node<Vertex> lastn, Node<Vertex> nextn,Cluster c) {
 		List<List<Node<Vertex>>> out = new LinkedList<List<Node<Vertex>>>();
+		System.out.println("L="+lastn.vertex.vertexID);
+		System.out.println("N="+nextn.vertex.vertexID);
 		//System.out.println("findsmallpath2 :" + lastn.vertex.vertexID + " " + n.vertex.vertexID + " " + nextn.vertex.vertexID);
 		if (!n.isChildren()) {
 			LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
 			out.add(tmp);
-			//System.out.println("Find no children");
+			System.out.println("Find no child");
 			return out;
 		} else if (n.children.size() == 1) {
-			//System.out.println("only one children");
+			System.out.println("only one child");
 			out.add(new LinkedList<Node<Vertex>>(n.children));
 			return out;
 		} else {
-			//System.out.println("has children");
+			System.out.println("has children");
 			/* find map edge node*/
 			int mapLastId = 0;
 			int mapNextId = 0;
@@ -273,20 +273,27 @@ public class TestQuery3 {
 				}
 
 			}
+			System.out.println("mapLastId="+mapLastId);
+			System.out.println("mapNextId="+mapNextId);
 			// map node didn't found
 			if (findMapFlg1 == false || findMapFlg2 == false) {
 				if (findMapFlg1 == false) {
 					int last = c.findClusterId(lastn.vertex.vertexID);
+					System.out.println("last="+last);
 					for (Edge e : n.edges) {
-						if (last == e.v1) {
+						if (last == e.v1 ) {
 							mapLastId = e.v2;
 							findMapFlg1 = true;
+							break;
 						} else if (last == e.v2) {
 							mapLastId = e.v1;
 							findMapFlg1 = true;
+							break;
 						}
 					}
-
+					if(!findMapFlg1){
+						System.out.println("!mapLastId="+mapLastId);
+					}
 				}
 				if (findMapFlg2 == false) {
 					int Next = c.findClusterId(nextn.vertex.vertexID);
@@ -310,7 +317,8 @@ public class TestQuery3 {
 				//System.out.println(mapLastId + " " + mapNextId);
 			}
 			
-			
+			System.out.println("mapLastId "+mapLastId);
+			System.out.println("mapNextId "+mapNextId);
 			// find skyline
 			if (mapNextId == mapLastId) {
 				LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
@@ -382,6 +390,13 @@ public class TestQuery3 {
 				}
 			}
 		}
+		System.out.println("out1=");
+		for(List<Node<Vertex>> s : out){
+			for(Node<Vertex> tmpN : s ){
+				System.out.print(tmpN.vertex.vertexID+" > ");
+			}
+			System.out.println();
+		}
 		return out;
 	}
 	
@@ -394,12 +409,14 @@ public class TestQuery3 {
 		if (!n.isChildren()) {
 			LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
 			out.add(tmp);
-			//System.out.println("Find no children");
+			System.out.println("Find no child");
 			return out;
 		} else if (n.children.size() == 1) {
+			System.out.println("1 child");
 			out.add(new LinkedList<Node<Vertex>>(n.children));
 			return out;
 		} else {
+			System.out.println("has children");
 			/* find map edge node*/
 			int mapNodeid = 0;
 			boolean findMapFlg = false;
@@ -553,6 +570,15 @@ public class TestQuery3 {
 					}
 				}
 			}
+			System.out.println("out2=");
+			for(List<Node<Vertex>> s : out){
+				for(Node<Vertex> tmpN : s ){
+					System.out.print(tmpN.vertex.vertexID+" > ");
+				}
+				System.out.println();
+			}
+			
+			
 			return out;
 		}
 	}
