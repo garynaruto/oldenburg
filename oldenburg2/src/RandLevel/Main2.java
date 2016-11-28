@@ -1,5 +1,7 @@
 package RandLevel;
 import buildTree.*;
+import search.AutoQuery;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +13,7 @@ import SkyPath.SkyPath;
 public class Main2 {
 	public static final int node = 6105;// OL.cnode100.txt  1000
 	public static final int edge = 7035;// OL.cedge100.txt 1152
-	public static final int dimasion = 3;
+	public static final int dimasion =  AutoQuery.dim[AutoQuery.dimI];
 	//public static final String nodeFile =  "./data/Oldenburg/OL.rand_cnode.txt";
 	//public static final String edgeFile = "./data/Oldenburg/OL.cedge.txt";
 	public static final String nodeFile =  "./data/Oldenburg/6Dimension_VertexCluster"+dimasion+".txt";
@@ -26,6 +28,7 @@ public class Main2 {
 		Edge.setDimasion(dimasion);
 		Edge[] edges = readSkyEdge();
 		Vertex[] vertexs = readSkyVertex();
+		System.out.println("dimasion :"+dimasion);
 		System.out.println(edges.length + "\n" + vertexs.length);
 		
 		for (Edge e : edges) {

@@ -306,7 +306,7 @@ public class Query{
 				list.add(allpaths);
 			}
 			
-			Thread.sleep(100);
+			//Thread.sleep(100);
 		}
 		//System.out.println();
 		//µ²§ô®É¶¡
@@ -367,18 +367,31 @@ public class Query{
 				if (lastn.vertex.vertexID == e.v1) {
 					mapLastId = e.v2;
 					findMapFlg1 = true;
+					if(e.edgeID == 0){
+						break;
+					}
 				} else if (lastn.vertex.vertexID == e.v2) {
 					mapLastId = e.v1;
 					findMapFlg1 = true;
+					if(e.edgeID == 0){
+						break;
+					}
 				}
+			}
+			for (Edge e : n.edges) {
 				if (nextn.vertex.vertexID == e.v1) {
 					mapNextId = e.v2;
 					findMapFlg2 = true;
+					if(e.edgeID == 0){
+						break;
+					}
 				} else if (nextn.vertex.vertexID == e.v2) {
 					mapNextId = e.v1;
 					findMapFlg2 = true;
+					if(e.edgeID == 0){
+						break;
+					}
 				}
-
 			}
 			System.out.println("mapLastId="+mapLastId);
 			System.out.println("mapNextId="+mapNextId);
@@ -526,11 +539,15 @@ public class Query{
 				if (linkedn.vertex.vertexID == e.v1) {
 					mapNodeid = e.v2;
 					findMapFlg = true;
-					break;
+					if(e.edgeID == 0){
+						break;
+					}
 				} else if (linkedn.vertex.vertexID == e.v2) {
 					mapNodeid = e.v1;
 					findMapFlg = true;
-					break;
+					if(e.edgeID == 0){
+						break;
+					}
 				}
 			}
 			System.out.println("mapId="+mapNodeid);

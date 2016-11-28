@@ -3,7 +3,7 @@ import java.io.PrintWriter;
 import buildTree.Vertex;
 
 public class AutoQuery {
-	
+	public static final int dimI = 4;
 	public static final int[] dim = {2,3,4,5,6};
 	public static final int[] start = {300,800,1300,3000,500};
 	public static final int[][] end = {{294,804,1329,3008,519},
@@ -16,7 +16,7 @@ public class AutoQuery {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		/**/
-			Query.d = dim[1];
+			Query.d = dim[dimI];
 			for(int i=0; i<name.length; i++){
 				int totles=0;
 				int totletime=0;
@@ -25,12 +25,12 @@ public class AutoQuery {
 					Query.start = start[e];
 					Query.end = end[i][e];
 					int[] ans = Query.main();
-					String file= folder+dim[1]+"Dimension"+name[i]+(e+1)+".txt";
+					String file= folder+dim[dimI]+"Dimension"+name[i]+(e+1)+".txt";
 					writeFile(file, start[e], end[i][e], ans);
 					totles += ans[0];
 					totletime += ans[1];
 				}
-				writeFile(folder+dim[1]+"Dimension"+name[i]+"Average.txt", totles/5.0, totletime/5.0 );
+				writeFile(folder+dim[dimI]+"Dimension"+name[i]+"Average.txt", totles/5.0, totletime/5.0 );
 			}
 		
 	}

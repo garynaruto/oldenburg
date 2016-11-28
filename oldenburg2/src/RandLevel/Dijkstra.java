@@ -12,8 +12,8 @@ public class Dijkstra {
 	public static final int dimasion = 6;
 	public static int dc = 0;
 	public static final String nodeFile = "./data/Oldenburg/OL.cnode.txt";
-	public static final String edgeFile = "./data/Oldenburg/OL_cedge_6Dimension.txt";
-	public static final String writeFile = "./data/Oldenburg/OL.cnode_6Dimension_Cluster.txt";
+	public static final String edgeFile = "./data/Oldenburg/OL_cedge_6DimensionCorr.txt";
+	public static final String writeFile = "./data/Oldenburg/OL.cnode_6DimensionCorr_Cluster.txt";
 	public static void main(String[] args) {
 		//Graph.Edge[] edges = readedge();
 		Graph.Edge[] edges;
@@ -81,7 +81,7 @@ public class Dijkstra {
 		return out;
 	}
 	public static void writetmpFile(Vertex[] vertexs,int i) {
-		String tmpFile = "./data/Oldenburg/tmp_6Dimension_Cluster("+i+").txt";
+		String tmpFile = "./data/Oldenburg/tmp_6DimensionCorr_Cluster("+i+").txt";
 		try {
 			PrintWriter writer = new PrintWriter(tmpFile, "UTF-8");
 			for (Vertex v : vertexs) {
