@@ -16,8 +16,8 @@ public class Skyline implements Comparable<Skyline> {
 	public double[] dimasion;
 	public Node<Vertex> starNode;
 	public Node<Vertex> endNode;
-	public int start;
-	public int end;
+	public final int start;
+	public final int end;
 	public int from = 0;
 	public static void setMap(Edge[] e){
 		edgeArray = e;
@@ -65,22 +65,23 @@ public class Skyline implements Comparable<Skyline> {
 				}
 			}
 		}*/
-		for(int i=0; i<path.size()-1; i++){
-			Node<Vertex> n = path.get(i);
-			Node<Vertex> n2 = path.get(i+1);
-			Edge e = edgeMap.get(n.vertex.vertexID+" "+n2.vertex.vertexID);
-			if(e != null){
-				edges.add(e);
+	}
+	
+	public void changeEndPoint(){
+		for (Node<Vertex> n : this.path) {
+			if (n.vertex.vertexID ==  start && !n.isChildren()) {
+				 this.starNode = n;
+			} else if (n.vertex.vertexID ==  end && !n.isChildren()) {
+				 this.endNode = n;
 			}
 		}
-		
 	}
 	@Override
 	public int compareTo(Skyline o) {
 		return (int) (this.dist - o.dist);
 	}
-	public void expansion(boolean end, int index, List<Node<Vertex>> l) {
-		if(end){
+	public void expansion(boolean endtrans, int index, List<Node<Vertex>> l) {
+		if(endtrans){
 			this.path.remove(this.path.size() - 1);
 			this.path.addAll(this.path.size(), l);
 		}else{
@@ -90,6 +91,16 @@ public class Skyline implements Comparable<Skyline> {
 		this.mapEdge();
 		this.calculateDimasion();
 		this.calculateDist();
+		
+		for (Node<Vertex> n : this.path) {
+			if (n.vertex.vertexID ==  start && !n.isChildren()) {
+				this.starNode = n;
+			} else if (n.vertex.vertexID ==  end && !n.isChildren()) {
+				 this.endNode = n;
+			}
+		}
+		
+		
 		return;
 	}
 	//new Sky line

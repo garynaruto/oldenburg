@@ -15,14 +15,17 @@ public class Query{
 	//public static final int start = 2945;// 2945-3152
 	//public static final int end = 425;
 	public static int d = 3;
-	public static int start = 500;// 2945-3152
-	public static int end = 519;
+	public static int start = 1300;// 2945-3152
+	public static int end = 1329;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 	public static Edge[] edges;
 
-	@SuppressWarnings("unchecked")
 	public static void main(String args[]) throws Exception {
+		main();
+	}
+	@SuppressWarnings("unchecked")
+	public static int[] main() throws Exception {
 		// Object deserialization 物件反序列化
 		try{
 			/* graphTree */
@@ -224,6 +227,7 @@ public class Query{
 								System.out.println("+from " + from);
 								otherpaths.from = from++;
 								otherpaths.expansion(false, i, ans.get(j));
+								//otherpaths.changeEndPoint();
 								h.insert(otherpaths);
 							}
 							allpaths.expansion(false, i, ans.get(0));
@@ -244,6 +248,7 @@ public class Query{
 								System.out.println("+from " + from);
 								otherpaths.from = from++;
 								otherpaths.expansion(true, i, l);
+								//otherpaths.changeEndPoint();
 								h.insert(otherpaths);
 							}
 							allpaths.expansion(true, i, ans.get(0));
@@ -265,6 +270,7 @@ public class Query{
 								System.out.println("+from " + from);								
 								otherpaths.from = from++;
 								otherpaths.expansion(false, i, l);
+								//otherpaths.changeEndPoint();
 								h.insert(otherpaths);
 							}
 							allpaths.expansion(false, i,  ans.get(0));
@@ -300,7 +306,7 @@ public class Query{
 				list.add(allpaths);
 			}
 			
-			Thread.sleep(100);
+			//Thread.sleep(100);
 		}
 		//System.out.println();
 		//結束時間
@@ -332,7 +338,7 @@ public class Query{
 		int[] out = new int[2];
 		out[0] = list.size();
 		out[1] = (int)totTime;
-		//return  out;
+		return  out;
 	}
 	
 	//find the small path in intermediate Node

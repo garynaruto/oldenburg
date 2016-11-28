@@ -15,7 +15,7 @@ public class AutoQuery {
 	public static final String folder ="./data/ans/";
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		/*
+		/**/
 			Query.d = dim[1];
 			for(int i=0; i<name.length; i++){
 				int totles=0;
@@ -24,14 +24,14 @@ public class AutoQuery {
 					System.out.println(start[e]+" "+end[i][e]);
 					Query.start = start[e];
 					Query.end = end[i][e];
-					int[] ans = Query.main(null);
+					int[] ans = Query.main();
 					String file= folder+dim[1]+"Dimension"+name[i]+(e+1)+".txt";
 					writeFile(file, start[e], end[i][e], ans);
 					totles += ans[0];
 					totletime += ans[1];
 				}
 				writeFile(folder+dim[1]+"Dimension"+name[i]+"Average.txt", totles/5.0, totletime/5.0 );
-			}*/
+			}
 		
 	}
 	public static void writeFile(String s,int start, int end, int[] ans) {
