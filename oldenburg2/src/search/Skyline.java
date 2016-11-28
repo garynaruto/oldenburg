@@ -65,6 +65,14 @@ public class Skyline implements Comparable<Skyline> {
 				}
 			}
 		}*/
+		for(int i=0; i<path.size()-1; i++){
+			Node<Vertex> n = path.get(i);
+			Node<Vertex> n2 = path.get(i+1);
+			Edge e = edgeMap.get(n.vertex.vertexID+" "+n2.vertex.vertexID);
+			if(e != null){
+				edges.add(e);
+			}
+		}
 	}
 	
 	public void changeEndPoint(){

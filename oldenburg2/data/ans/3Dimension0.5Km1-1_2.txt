@@ -2,5 +2,5 @@ startPoint: 800
 endPoint: 804
 inputNodes: 6105
 inputEdges: 7035
-skyPathNum: 2
-executionTime: 31
+skyPathNum: 1
+executionTime: 18

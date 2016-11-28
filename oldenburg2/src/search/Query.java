@@ -16,7 +16,7 @@ public class Query{
 	//public static final int end = 425;
 	public static int d = 3;
 	public static int start = 1300;// 2945-3152
-	public static int end = 1329;
+	public static int end = 1421;
 	public static Tree<Vertex> graphTree;
 	public static List<Edge> edgeList;
 	public static Edge[] edges;
@@ -227,7 +227,7 @@ public class Query{
 								System.out.println("+from " + from);
 								otherpaths.from = from++;
 								otherpaths.expansion(false, i, ans.get(j));
-								//otherpaths.changeEndPoint();
+								otherpaths.changeEndPoint();
 								h.insert(otherpaths);
 							}
 							allpaths.expansion(false, i, ans.get(0));
@@ -248,7 +248,7 @@ public class Query{
 								System.out.println("+from " + from);
 								otherpaths.from = from++;
 								otherpaths.expansion(true, i, l);
-								//otherpaths.changeEndPoint();
+								otherpaths.changeEndPoint();
 								h.insert(otherpaths);
 							}
 							allpaths.expansion(true, i, ans.get(0));
@@ -270,7 +270,7 @@ public class Query{
 								System.out.println("+from " + from);								
 								otherpaths.from = from++;
 								otherpaths.expansion(false, i, l);
-								//otherpaths.changeEndPoint();
+								otherpaths.changeEndPoint();
 								h.insert(otherpaths);
 							}
 							allpaths.expansion(false, i,  ans.get(0));
@@ -306,7 +306,7 @@ public class Query{
 				list.add(allpaths);
 			}
 			
-			//Thread.sleep(100);
+			Thread.sleep(100);
 		}
 		//System.out.println();
 		//µ²§ô®É¶¡
@@ -526,11 +526,15 @@ public class Query{
 				if (linkedn.vertex.vertexID == e.v1) {
 					mapNodeid = e.v2;
 					findMapFlg = true;
+					break;
 				} else if (linkedn.vertex.vertexID == e.v2) {
 					mapNodeid = e.v1;
 					findMapFlg = true;
+					break;
 				}
 			}
+			System.out.println("mapId="+mapNodeid);
+			
 			if (findMapFlg == false) {
 				//System.out.println("find Map node Flg false 1");
 				int last = c.findClusterId(linkedn.vertex.vertexID);
@@ -552,6 +556,7 @@ public class Query{
 				//System.out.println("mapNodeid = " + mapNodeid);
 			}
 			
+			System.out.println("mapId=>"+mapNodeid);
 			// find skyline
 			if (objectID == mapNodeid) {
 				LinkedList<Node<Vertex>> tmp = new LinkedList<Node<Vertex>>();
