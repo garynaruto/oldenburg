@@ -1,7 +1,6 @@
 package RandLevel;
 import buildTree.*;
 import search.AutoQuery;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
