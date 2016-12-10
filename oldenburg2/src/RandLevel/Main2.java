@@ -12,17 +12,19 @@ import SkyPath.SkyPath;
 public class Main2 {
 	public static final int node = 6105;// OL.cnode100.txt  1000
 	public static final int edge = 7035;// OL.cedge100.txt 1152
-	public static final int dimasion =  AutoQuery.dim[AutoQuery.dimI];
+	public static int dimasion =  AutoQuery.dim[AutoQuery.dimI];
 	//public static final String nodeFile =  "./data/Oldenburg/OL.rand_cnode.txt";
 	//public static final String edgeFile = "./data/Oldenburg/OL.cedge.txt";
-	public static final String nodeFile =  "./data/Oldenburg/6Dimension_VertexCluster"+dimasion+".txt";
-	public static final String edgeFile = "./data/Oldenburg/OL_cedge_"+dimasion+"Dimension.txt";
-	public static final String writeClusterFile = "./data/OL.cnode Cluster level.txt";
-	public static final String writeTreeFile = "./data/OL." + node + "tree.txt";
+	public static String nodeFile =  "./data/Oldenburg/6DimensionAnti_VertexCluster"+dimasion+".txt";
+	public static String edgeFile = "./data/Oldenburg/OL_cedge_"+dimasion+"DimensionAnti.txt";
+	public static String writeClusterFile = "./data/OL.cnode Cluster level.txt";
+	public static String writeTreeFile = "./data/OL." + node + "tree.txt";
 	public static int rangeNum = 100;// level range
 	public static int[] range;
 
 	public static void main(String[] args) {
+		edgeFile = "./data/Oldenburg/OL_cedge_"+dimasion+"DimensionCorr.txt";
+		nodeFile =  "./data/Oldenburg/6DimensionCorr_VertexCluster"+dimasion+".txt";
 		// read node and edge
 		Edge.setDimasion(dimasion);
 		Edge[] edges = readSkyEdge();

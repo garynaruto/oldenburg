@@ -8,10 +8,10 @@ import buildTree.Vertex;
 
 public class changeVertex {
 	public static final int node = 6105;
-	public static final int s = 5;
-	public static final String clFile =  "./data/Oldenburg/tmp_6Dimension_Cluster("+s+").txt";
+	public static final int s = 0;
+	public static final String clFile =  "./data/Oldenburg/tmp_6DimensionAnti_Cluster("+s+").txt";
 	public static final String nodeFile =  "./data/Oldenburg/OL.cnode.txt";
-	public static final String writeFile = "./data/6Dimension_VertexCluster"+s+".txt";
+	public static final String writeFile = "./data/6DimensionAnti_VertexCluster"+s+".txt";
 	
 	public static void main(String[] args) {
 		Vertex[] vertexs = readVertex();
